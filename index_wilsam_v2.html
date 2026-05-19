@@ -1,0 +1,1652 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>WilSam Studio — Création de sites web</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Bebas+Neue&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --cream: #0d2840;
+      --ivory: #daf0ff;
+      --ebony: #f0f6fd;
+      --dark: #f0f6fd;
+      --sq-light: #a8d5f0;
+      --sq-dark: #daf0ff;
+      --gold: #1a6fa8;
+      --gold-light: #2a8fc8;
+      --racing-green: #1a6fa8;
+      --chrome: #a8d5f0;
+      --red-accent: #1a6fa8;
+      --border: rgba(26,111,168,0.18);
+      --text: #0d2840;
+      --muted: #4a7a9a;
+      /* Ciel Nordique full palette */
+      --bg: #f0f6fd;
+      --surface: #daf0ff;
+      --border-color: #a8d5f0;
+      --marine: #0d2840;
+      --saphir: #1a6fa8;
+      --azur: #daf0ff;
+      --ciel: #f0f6fd;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--marine);
+      font-family: 'DM Mono', monospace;
+      font-weight: 300;
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    /* ── CUSTOM CURSOR ── */
+    .cursor {
+      width: 8px; height: 8px;
+      background: var(--saphir);
+      border-radius: 50%;
+      position: fixed; top: 0; left: 0;
+      pointer-events: none; z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: transform 0.08s;
+    }
+    .cursor-ring {
+      width: 32px; height: 32px;
+      border: 1px solid var(--saphir);
+      border-radius: 50%;
+      position: fixed; top: 0; left: 0;
+      pointer-events: none; z-index: 9998;
+      transform: translate(-50%, -50%);
+      transition: transform 0.18s ease, width 0.2s, height 0.2s, opacity 0.2s;
+      opacity: 0.5;
+    }
+
+    /* ── CHESS BOARD BACKGROUND ── */
+    .chess-bg {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .chess-grid {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      grid-template-rows: repeat(18, 1fr);
+      opacity: 0.25;
+    }
+
+    .chess-grid .sq {
+      aspect-ratio: 1;
+    }
+    .chess-grid .sq.light { background: var(--border-color); }
+    .chess-grid .sq.dark  { background: transparent; }
+
+    /* Floating chess pieces SVGs */
+    .chess-pieces-bg {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+    }
+    .chess-piece-float {
+      position: absolute;
+      opacity: 0.04;
+      filter: sepia(1) saturate(0.5) brightness(2);
+    }
+
+    /* Light overlay */
+    .chess-bg::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse at 50% 0%, rgba(26,111,168,0.05) 0%, transparent 60%),
+        linear-gradient(to bottom, rgba(240,246,253,0.88) 0%, rgba(240,246,253,0.55) 30%, rgba(240,246,253,0.55) 70%, rgba(240,246,253,0.88) 100%);
+    }
+
+    /* ── ASTON MARTIN VERTICAL RAIL ── */
+    #aston-rail {
+      position: fixed;
+      right: 0;
+      top: 0;
+      width: 56px;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 50;
+      overflow: visible;
+    }
+
+    /* The vertical road/track line */
+    #aston-rail::before {
+      content: '';
+      position: absolute;
+      top: 0; bottom: 0;
+      left: 50%;
+      width: 1px;
+      background: linear-gradient(to bottom,
+        transparent 0%,
+        rgba(26,111,168,0.2) 10%,
+        rgba(26,111,168,0.15) 90%,
+        transparent 100%
+      );
+      transform: translateX(-50%);
+    }
+
+    #aston-martin {
+      position: absolute;
+      left: 50%;
+      top: -120px;
+      width: 220px;
+      transform: translateX(-50%) rotate(90deg);
+      transform-origin: center center;
+      filter: drop-shadow(0 4px 12px rgba(26,111,168,0.25));
+      transition: none;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 1.6rem 4rem;
+      background: rgba(240,246,253,0.88);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.6rem;
+      letter-spacing: 0.12em;
+      color: var(--marine);
+    }
+    .logo span { color: var(--saphir); }
+
+    nav ul { list-style: none; display: flex; gap: 3rem; }
+    nav a {
+      text-decoration: none;
+      color: var(--muted);
+      font-size: 0.72rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      font-family: 'DM Mono', monospace;
+      transition: color 0.25s;
+    }
+    nav a:hover { color: var(--saphir); }
+
+    .nav-cta {
+      color: var(--saphir) !important;
+      border: 1px solid var(--saphir);
+      padding: 0.45rem 1.3rem;
+      letter-spacing: 0.12em;
+      transition: background 0.25s, color 0.25s !important;
+    }
+    .nav-cta:hover {
+      background: var(--saphir);
+      color: #fff !important;
+    }
+
+    /* ── GOLD RULE DECORATIONS ── */
+    .gold-rule {
+      width: 40px;
+      height: 1px;
+      background: var(--saphir);
+      display: inline-block;
+      vertical-align: middle;
+      margin-right: 1rem;
+    }
+
+    /* ── HERO ── */
+    #hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 9rem 4rem 5rem;
+      position: relative;
+      z-index: 10;
+    }
+
+    .hero-eyebrow {
+      font-size: 0.68rem;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--saphir);
+      margin-bottom: 2.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0;
+      opacity: 0;
+      animation: fadeUp 0.7s ease 0.3s forwards;
+    }
+
+    h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(5rem, 12vw, 13rem);
+      font-weight: 400;
+      line-height: 0.88;
+      letter-spacing: 0.04em;
+      margin-bottom: 3rem;
+      max-width: 800px;
+      color: var(--marine);
+    }
+    h1 .line { display: block; overflow: hidden; }
+    h1 .line span {
+      display: block;
+      opacity: 0;
+      transform: translateY(110%);
+      animation: slideUp 0.8s cubic-bezier(0.16,1,0.3,1) forwards;
+    }
+    h1 .line:nth-child(1) span { animation-delay: 0.4s; }
+    h1 .line:nth-child(2) span { animation-delay: 0.55s; }
+    h1 .line:nth-child(3) span { animation-delay: 0.7s; }
+
+    .accent-word { color: var(--saphir); }
+    .stroke-word {
+      -webkit-text-stroke: 2px var(--saphir);
+      color: transparent;
+    }
+
+    .hero-sub {
+      max-width: 480px;
+      line-height: 1.9;
+      color: var(--muted);
+      margin-bottom: 3.5rem;
+      opacity: 0;
+      animation: fadeUp 0.7s ease 1s forwards;
+      font-style: italic;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.15rem;
+    }
+
+    .hero-actions {
+      display: flex; align-items: center; gap: 2.5rem;
+      opacity: 0;
+      animation: fadeUp 0.7s ease 1.2s forwards;
+    }
+
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 0.8rem;
+      background: var(--saphir);
+      color: #fff;
+      padding: 0.9rem 2.2rem;
+      font-family: 'DM Mono', monospace;
+      font-weight: 400;
+      font-size: 0.78rem;
+      text-decoration: none;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      transition: background 0.25s, transform 0.2s;
+    }
+    .btn-primary:hover { background: var(--gold-light); transform: translateY(-2px); }
+    .btn-primary svg { width: 16px; transition: transform 0.2s; }
+    .btn-primary:hover svg { transform: translateX(5px); }
+
+    .btn-ghost {
+      font-size: 0.75rem;
+      color: var(--muted);
+      text-decoration: none;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      border-bottom: 1px solid rgba(74,122,154,0.35);
+      padding-bottom: 3px;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .btn-ghost:hover { color: var(--saphir); border-color: var(--saphir); }
+
+    /* Hero deco card */
+    .hero-deco {
+      position: absolute; right: 4rem; top: 50%;
+      transform: translateY(-50%);
+      width: clamp(200px, 24vw, 340px);
+      opacity: 0;
+      animation: fadeIn 1s ease 1.4s forwards;
+      z-index: 10;
+    }
+
+    .deco-card {
+      background: rgba(255,255,255,0.9);
+      border: 1px solid var(--border);
+      padding: 2rem;
+      position: relative;
+      overflow: hidden;
+      backdrop-filter: blur(8px);
+      box-shadow: 0 8px 32px rgba(26,111,168,0.1);
+    }
+    .deco-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(to right, var(--saphir), transparent);
+    }
+
+    .deco-tag {
+      display: inline-block;
+      background: rgba(26,111,168,0.08);
+      color: var(--saphir);
+      font-size: 0.65rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      padding: 0.3rem 0.8rem;
+      margin-bottom: 1.2rem;
+    }
+
+    .deco-card h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 0.6rem;
+      color: var(--marine);
+    }
+    .deco-card p { font-size: 0.78rem; color: var(--muted); line-height: 1.7; font-family: 'DM Mono', monospace; }
+
+    .deco-stack {
+      display: flex; gap: 0.5rem; flex-wrap: wrap;
+      margin-top: 1.4rem;
+    }
+    .deco-pill {
+      font-size: 0.65rem;
+      padding: 0.25rem 0.7rem;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      letter-spacing: 0.06em;
+    }
+
+    .deco-bottom {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-top: 1.6rem;
+      padding-top: 1.2rem;
+      border-top: 1px solid var(--border);
+    }
+    .deco-price {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.6rem;
+      letter-spacing: 0.06em;
+      color: var(--saphir);
+    }
+    .deco-price small { font-size: 0.65rem; color: var(--muted); font-family: 'DM Mono', monospace; display: block; letter-spacing: 0.08em; }
+
+    /* Scroll hint */
+    .scroll-hint {
+      position: absolute; bottom: 3rem; left: 4rem;
+      display: flex; align-items: center; gap: 1rem;
+      font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--muted);
+      opacity: 0;
+      animation: fadeIn 1s ease 1.8s forwards;
+    }
+    .scroll-line {
+      width: 50px; height: 1px;
+      background: linear-gradient(to right, var(--saphir), transparent);
+      animation: scrollPulse 2s ease infinite;
+    }
+
+    /* ── MARQUEE ── */
+    .marquee-wrap {
+      overflow: hidden;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 1rem 0;
+      background: var(--surface);
+      position: relative; z-index: 10;
+    }
+    .marquee-track {
+      display: flex; gap: 4rem;
+      white-space: nowrap;
+      animation: marquee 25s linear infinite;
+    }
+    .marquee-item {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 0.9rem;
+      letter-spacing: 0.22em;
+      color: var(--muted);
+      display: flex; align-items: center; gap: 1.2rem;
+      flex-shrink: 0;
+    }
+    .marquee-item .romb {
+      width: 6px; height: 6px;
+      background: var(--saphir);
+      transform: rotate(45deg);
+      flex-shrink: 0;
+    }
+
+    /* ── SECTION COMMON ── */
+    section { position: relative; z-index: 10; }
+
+    .section-eyebrow {
+      font-size: 0.65rem;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      color: var(--saphir);
+      margin-bottom: 1.2rem;
+      display: flex;
+      align-items: center;
+    }
+
+    h2 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(3rem, 5.5vw, 5.5rem);
+      font-weight: 400;
+      letter-spacing: 0.05em;
+      line-height: 0.95;
+      color: var(--marine);
+    }
+
+    h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 600;
+    }
+
+    /* ── ABOUT ── */
+    #about {
+      padding: 10rem 4rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6rem;
+      align-items: start;
+      background: var(--bg);
+    }
+    #about::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(to right, transparent, var(--saphir), transparent);
+    }
+
+    .about-left h2 { margin-bottom: 2rem; }
+    .about-left p {
+      color: var(--muted);
+      line-height: 1.9;
+      font-size: 0.95rem;
+      margin-bottom: 1.4rem;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.1rem;
+    }
+    .about-left p strong { color: var(--marine); font-weight: 600; }
+
+    .team-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: var(--border);
+    }
+
+    .team-card {
+      background: #fff;
+      padding: 2.2rem 2rem;
+      position: relative;
+      overflow: hidden;
+      transition: background 0.3s;
+    }
+    .team-card:hover { background: var(--azur); }
+
+    .team-card::before {
+      content: attr(data-initial);
+      position: absolute; right: 1.5rem; top: 1.5rem;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 5rem;
+      line-height: 1;
+      letter-spacing: 0;
+      opacity: 0.06;
+      color: var(--saphir);
+    }
+
+    .team-initial {
+      width: 44px; height: 44px;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.4rem;
+      letter-spacing: 0.05em;
+      margin-bottom: 1.2rem;
+      border: 1px solid var(--border);
+      color: var(--saphir);
+    }
+
+    .team-card h4 {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 700;
+      font-size: 1.25rem;
+      margin-bottom: 0.5rem;
+      color: var(--marine);
+    }
+    .team-card p { font-size: 0.78rem; color: var(--muted); line-height: 1.7; font-family: 'DM Mono', monospace; }
+
+    .team-promise {
+      background: #fff;
+      border-top: 0;
+      padding: 2rem;
+      grid-column: 1 / -1;
+      border-top: 1px solid var(--border);
+    }
+    .team-promise p {
+      font-size: 1rem;
+      color: var(--muted);
+      line-height: 1.8;
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+    }
+    .team-promise p strong { color: var(--marine); font-style: normal; }
+
+    .about-stats {
+      grid-column: 1 / -1;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0;
+      background: var(--border);
+      margin-top: 2rem;
+    }
+
+    .stat {
+      background: var(--bg);
+      padding: 2.5rem 2rem;
+      display: flex; flex-direction: column; gap: 0.5rem;
+    }
+    .stat-num {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 3.5rem;
+      font-weight: 400;
+      color: var(--saphir);
+      line-height: 1;
+      letter-spacing: 0.04em;
+    }
+    .stat-label { font-size: 0.72rem; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; }
+
+    /* ── SERVICES ── */
+    #services {
+      padding: 8rem 4rem;
+      background: #fff;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .services-header {
+      display: flex; justify-content: space-between; align-items: flex-end;
+      margin-bottom: 4rem;
+    }
+    .services-header p {
+      color: var(--muted);
+      font-size: 0.82rem;
+      max-width: 260px;
+      text-align: right;
+      line-height: 1.8;
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 1rem;
+    }
+
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--border);
+    }
+
+    .service-item {
+      background: #fff;
+      padding: 3rem;
+      position: relative;
+      transition: background 0.3s;
+    }
+    .service-item:hover { background: var(--azur); }
+    .service-item::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .service-item:nth-child(1)::before { background: var(--gold); }
+    .service-item:nth-child(2)::before { background: var(--chrome); }
+    .service-item:nth-child(3)::before { background: var(--gold-light); }
+    .service-item:hover::before { opacity: 1; }
+
+    .service-num {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 0.75rem;
+      color: var(--muted);
+      letter-spacing: 0.2em;
+      margin-bottom: 2.5rem;
+    }
+
+    .service-icon {
+      font-size: 1.5rem;
+      margin-bottom: 1.5rem;
+      display: block;
+    }
+
+    .service-item h3 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      color: var(--marine);
+    }
+    .service-item > p { font-size: 0.82rem; color: var(--muted); line-height: 1.8; font-family: 'DM Mono', monospace; }
+
+    .service-included {
+      margin-top: 1.8rem;
+      padding-top: 1.8rem;
+      border-top: 1px solid var(--border);
+    }
+    .service-included li {
+      list-style: none;
+      font-size: 0.75rem;
+      color: var(--muted);
+      padding: 0.35rem 0;
+      padding-left: 1.2rem;
+      position: relative;
+      font-family: 'DM Mono', monospace;
+    }
+    .service-included li::before {
+      content: '◆';
+      position: absolute; left: 0;
+      color: var(--saphir);
+      font-size: 0.5rem;
+      top: 0.45rem;
+    }
+
+    .service-price {
+      margin-top: 2rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+      display: flex; align-items: baseline; gap: 0.6rem;
+    }
+    .price-val {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2.8rem;
+      letter-spacing: 0.04em;
+    }
+    .price-note { font-size: 0.72rem; color: var(--muted); font-family: 'DM Mono', monospace; }
+
+    /* ── HOW ── */
+    #how {
+      padding: 10rem 4rem;
+      background: var(--bg);
+    }
+    .how-header { margin-bottom: 5rem; }
+
+    .how-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1px;
+      background: var(--border);
+      position: relative;
+    }
+
+    .how-step {
+      background: var(--bg);
+      padding: 3rem 2.5rem;
+      position: relative;
+      overflow: hidden;
+      transition: background 0.3s;
+    }
+    .how-step:hover { background: var(--azur); }
+
+    .how-step::after {
+      content: attr(data-num);
+      position: absolute; bottom: -1rem; right: 1rem;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 7rem;
+      line-height: 1;
+      color: rgba(26,111,168,0.06);
+      letter-spacing: 0;
+    }
+
+    .step-num {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 0.75rem;
+      color: var(--saphir);
+      letter-spacing: 0.24em;
+      margin-bottom: 2rem;
+    }
+    .how-step h3 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin-bottom: 0.8rem;
+      color: var(--marine);
+    }
+    .how-step p { font-size: 0.78rem; color: var(--muted); line-height: 1.8; font-family: 'DM Mono', monospace; }
+
+    /* ── HOSTING BADGE ── */
+    .hosting-badge {
+      margin: 0 4rem 8rem;
+      background: rgba(255,255,255,0.9);
+      border: 1px solid var(--border);
+      padding: 3.5rem;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 3rem;
+      position: relative; z-index: 10;
+    }
+    .hosting-badge::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(to right, var(--saphir), transparent);
+    }
+
+    .hosting-badge-left { max-width: 580px; }
+    .hosting-badge-left h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.7rem;
+      font-weight: 700;
+      margin-bottom: 0.8rem;
+      color: var(--marine);
+    }
+    .hosting-badge-left h3 span { color: var(--saphir); }
+    .hosting-badge-left p { font-size: 0.82rem; color: var(--muted); line-height: 1.8; font-family: 'DM Mono', monospace; }
+
+    .hosting-pills {
+      display: flex; gap: 0.8rem; flex-wrap: wrap;
+      margin-top: 1.4rem;
+    }
+    .hosting-pill {
+      display: flex; align-items: center; gap: 0.5rem;
+      font-size: 0.72rem;
+      padding: 0.4rem 1rem;
+      border: 1px solid rgba(26,111,168,0.25);
+      color: var(--saphir);
+      font-family: 'DM Mono', monospace;
+      letter-spacing: 0.06em;
+    }
+    .hosting-pill svg { width: 11px; }
+
+    .hosting-big {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 5rem;
+      letter-spacing: 0.06em;
+      color: rgba(26,111,168,0.12);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    /* ── CONTACT ── */
+    #contact {
+      padding: 8rem 4rem;
+      background: #fff;
+      border-top: 1px solid var(--border);
+    }
+    .contact-inner {
+      max-width: 760px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    .contact-inner .section-eyebrow { justify-content: center; }
+    .contact-inner h2 { margin: 0.8rem 0 2rem; }
+    .contact-inner > p {
+      color: var(--muted);
+      font-size: 1.1rem;
+      line-height: 1.9;
+      margin-bottom: 3.5rem;
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+    }
+
+    .email-cards {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 1px; background: var(--border);
+      margin-bottom: 1px;
+      text-decoration: none;
+    }
+
+    .email-card {
+      background: #fff;
+      padding: 1.8rem 2rem;
+      display: flex; align-items: center; gap: 1.2rem;
+      transition: background 0.25s;
+      text-align: left;
+      text-decoration: none;
+    }
+    .email-card:hover { background: var(--azur); }
+
+    .email-initial {
+      width: 42px; height: 42px;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.3rem;
+      letter-spacing: 0.05em;
+      flex-shrink: 0;
+      border: 1px solid;
+    }
+    .email-card.wil .email-initial { border-color: rgba(26,111,168,0.4); color: var(--saphir); }
+    .email-card.sam .email-initial { border-color: rgba(26,111,168,0.3); color: var(--chrome); }
+
+    .email-card h5 {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--marine);
+      margin-bottom: 0.2rem;
+    }
+    .email-card span { font-size: 0.72rem; font-family: 'DM Mono', monospace; }
+    .email-card.wil span { color: var(--saphir); }
+    .email-card.sam span { color: var(--chrome); }
+
+    .contact-form {
+      background: rgba(240,246,253,0.95);
+      border: 1px solid var(--border);
+      border-top: none;
+      padding: 3rem;
+      text-align: left;
+    }
+
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; margin-bottom: 1.2rem; }
+    .form-group { display: flex; flex-direction: column; gap: 0.5rem; }
+    .form-group.full { grid-column: 1 / -1; }
+
+    label {
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-family: 'DM Mono', monospace;
+    }
+
+    input, textarea, select {
+      background: #fff;
+      border: 1px solid var(--border);
+      color: var(--marine);
+      padding: 0.85rem 1.2rem;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.85rem;
+      font-weight: 300;
+      outline: none;
+      transition: border-color 0.2s;
+      width: 100%;
+    }
+    input:focus, textarea:focus, select:focus { border-color: var(--saphir); }
+    textarea { resize: none; min-height: 130px; }
+    select option { background: #fff; }
+    input::placeholder, textarea::placeholder { color: rgba(74,122,154,0.45); }
+
+    .form-submit {
+      display: flex; justify-content: flex-end;
+      margin-top: 2rem;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      padding: 2.5rem 4rem;
+      border-top: 1px solid var(--border);
+      display: flex; justify-content: space-between; align-items: center;
+      position: relative; z-index: 10;
+      background: var(--bg);
+    }
+    footer p { font-size: 0.72rem; color: var(--muted); font-family: 'DM Mono', monospace; letter-spacing: 0.08em; }
+    .footer-logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.2rem;
+      letter-spacing: 0.12em;
+      color: var(--marine);
+    }
+    .footer-logo span { color: var(--saphir); }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(110%); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; } to { opacity: 1; }
+    }
+    @keyframes marquee {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+    @keyframes scrollPulse {
+      0%   { opacity: 0.3; transform: scaleX(0.4); transform-origin: left; }
+      50%  { opacity: 1; transform: scaleX(1); transform-origin: left; }
+      100% { opacity: 0.3; transform: scaleX(0.4); transform-origin: left; }
+    }
+    @keyframes wheelSpin {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(360deg); }
+    }
+
+    /* ── REVEAL ON SCROLL ── */
+    .reveal {
+      opacity: 0; transform: translateY(28px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* ── CHESS PIECE ANIMATIONS ── */
+    @keyframes floatPiece {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      33%  { transform: translateY(-12px) rotate(1deg); }
+      66%  { transform: translateY(6px) rotate(-0.5deg); }
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 960px) {
+      nav { padding: 1.2rem 2rem; }
+      nav ul { display: none; }
+      #hero { padding: 8rem 2rem 4rem; }
+      .hero-deco { display: none; }
+      #aston-rail { display: none; }
+      #about { grid-template-columns: 1fr; padding: 6rem 2rem; gap: 4rem; }
+      .about-stats { grid-template-columns: 1fr 1fr; }
+      #services { padding: 6rem 2rem; }
+      .services-header { flex-direction: column; align-items: flex-start; gap: 1rem; }
+      .services-header p { text-align: left; }
+      .services-grid { grid-template-columns: 1fr; }
+      #how { padding: 6rem 2rem; }
+      .how-grid { grid-template-columns: 1fr 1fr; }
+      .hosting-badge { flex-direction: column; margin: 0 2rem 6rem; }
+      #contact { padding: 6rem 2rem; }
+      .email-cards { grid-template-columns: 1fr; }
+      .form-row { grid-template-columns: 1fr; }
+      footer { flex-direction: column; gap: 1rem; text-align: center; padding: 2rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+
+  <!-- CHESS BACKGROUND -->
+  <div class="chess-bg">
+    <div class="chess-grid" id="chessGrid"></div>
+    <div class="chess-pieces-bg" id="chessPiecesBg"></div>
+  </div>
+
+  <!-- ASTON MARTIN DB4 — VERTICAL RAIL -->
+  <div id="aston-rail">
+    <svg id="aston-martin" viewBox="0 0 820 320" xmlns="http://www.w3.org/2000/svg">
+      <!-- Aston Martin DB4 side silhouette — detailed SVG illustration -->
+      <defs>
+        <linearGradient id="bodyGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#2d5a3d"/>
+          <stop offset="40%" stop-color="#1b3a2d"/>
+          <stop offset="100%" stop-color="#0d1f17"/>
+        </linearGradient>
+        <linearGradient id="glassGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#8aaabf" stop-opacity="0.8"/>
+          <stop offset="100%" stop-color="#2a4a5a" stop-opacity="0.6"/>
+        </linearGradient>
+        <linearGradient id="chromeGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#d4cbb8"/>
+          <stop offset="50%" stop-color="#f5f0e8"/>
+          <stop offset="100%" stop-color="#9a9285"/>
+        </linearGradient>
+        <radialGradient id="wheelGrad" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#3a3530"/>
+          <stop offset="70%" stop-color="#1a1510"/>
+          <stop offset="100%" stop-color="#0a0805"/>
+        </radialGradient>
+        <radialGradient id="hubGrad" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#2a8fc8"/>
+          <stop offset="60%" stop-color="#1a6fa8"/>
+          <stop offset="100%" stop-color="#0d5a8a"/>
+        </radialGradient>
+        <filter id="carShadow">
+          <feDropShadow dx="-4" dy="8" stdDeviation="10" flood-color="rgba(13,40,64,0.3)"/>
+        </filter>
+        <clipPath id="bodyClip">
+          <path d="M 60,220 Q 80,200 120,195 L 180,158 Q 220,130 280,118 Q 340,108 380,110 L 460,108 Q 510,106 550,112 L 620,120 Q 680,128 720,148 L 760,168 Q 780,178 790,195 L 800,220 Z"/>
+        </clipPath>
+      </defs>
+
+      <!-- Ground shadow -->
+      <ellipse cx="420" cy="285" rx="360" ry="18" fill="rgba(0,0,0,0.25)"/>
+
+      <g filter="url(#carShadow)">
+        <!-- Main body -->
+        <path d="M 60,225 Q 75,215 90,212 L 100,200 Q 110,185 130,175 L 175,162 Q 200,150 230,140 Q 260,132 290,128 Q 320,124 360,122 L 440,120 Q 480,118 520,120 Q 560,122 600,128 L 650,138 Q 690,150 720,165 L 758,185 Q 775,195 782,208 L 792,225 Q 796,232 792,238 L 60,238 Q 56,232 60,225 Z"
+              fill="url(#bodyGrad)" stroke="#2a4a38" stroke-width="1.5"/>
+
+        <!-- Hood / bonnet — long elegant slope -->
+        <path d="M 60,225 L 92,210 Q 105,200 115,193 L 130,175 Q 155,155 185,148 L 230,140 Q 260,132 300,128 L 380,122 L 440,120 L 440,238 L 60,238 Z"
+              fill="url(#bodyGrad)"/>
+
+        <!-- Boot / rear -->
+        <path d="M 680,130 Q 720,148 755,178 L 778,200 L 790,225 L 792,238 L 640,238 L 640,145 Q 660,137 680,130 Z"
+              fill="#142e22"/>
+
+        <!-- Boot lid detail -->
+        <path d="M 640,143 L 690,130 Q 720,148 750,175 L 773,198 L 782,215 L 785,230 L 720,230 L 700,190 L 660,165 L 640,160 Z"
+              fill="#1a3a2a" opacity="0.7"/>
+
+        <!-- Roof / greenhouse -->
+        <path d="M 280,122 Q 300,95 340,80 L 390,68 Q 440,60 490,62 L 540,66 Q 580,72 610,85 L 650,105 Q 670,115 680,128 L 640,142 Q 610,130 570,122 L 500,116 L 420,114 L 350,116 Q 320,118 295,125 Z"
+              fill="url(#bodyGrad)" stroke="#2a4a38" stroke-width="1"/>
+
+        <!-- Windscreen -->
+        <path d="M 292,120 Q 308,100 338,82 L 390,70 Q 435,63 475,64 L 510,66 L 500,118 L 420,116 L 360,118 Z"
+              fill="url(#glassGrad)" opacity="0.85"/>
+
+        <!-- Windscreen frame -->
+        <path d="M 292,120 Q 308,100 338,82 L 390,70 Q 435,63 475,64 L 510,66 L 500,118 L 360,118 Z"
+              fill="none" stroke="#8aaabf" stroke-width="1.5" opacity="0.5"/>
+
+        <!-- Rear window -->
+        <path d="M 510,66 L 540,67 Q 578,73 605,86 L 640,106 L 638,128 L 600,122 L 560,116 L 520,114 Z"
+              fill="url(#glassGrad)" opacity="0.8"/>
+
+        <!-- Door panel line -->
+        <path d="M 295,125 Q 380,115 500,114 L 600,120 L 602,180 Q 500,190 380,192 L 290,185 Z"
+              fill="rgba(0,0,0,0.1)" stroke="rgba(201,168,76,0.2)" stroke-width="1"/>
+
+        <!-- Chrome window surround -->
+        <path d="M 292,120 Q 308,100 338,82 L 390,70 Q 435,63 475,64 L 510,66 L 500,118"
+              fill="none" stroke="url(#chromeGrad)" stroke-width="2.5" stroke-linecap="round"/>
+        <path d="M 500,118 L 510,66 L 542,68 Q 580,74 607,88 L 640,108"
+              fill="none" stroke="url(#chromeGrad)" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="292" y1="120" x2="640" y2="128" stroke="url(#chromeGrad)" stroke-width="1.5" opacity="0.6"/>
+
+        <!-- Chrome side strip / waistline -->
+        <path d="M 95,195 Q 200,175 380,168 L 600,168 Q 680,170 770,188"
+              fill="none" stroke="url(#chromeGrad)" stroke-width="2" opacity="0.7"/>
+
+        <!-- Front bumper detail -->
+        <path d="M 60,225 L 90,212 Q 100,205 108,205 L 112,225 L 85,230 Z"
+              fill="url(#chromeGrad)" opacity="0.7"/>
+        <!-- Front grille shape -->
+        <path d="M 65,225 Q 75,215 88,210 L 96,215 Q 88,218 80,226 Z"
+              fill="#0d1f17" stroke="url(#chromeGrad)" stroke-width="1"/>
+
+        <!-- Grille bars -->
+        <line x1="72" y1="225" x2="94" y2="212" stroke="url(#chromeGrad)" stroke-width="0.8" opacity="0.7"/>
+        <line x1="78" y1="227" x2="96" y2="215" stroke="url(#chromeGrad)" stroke-width="0.8" opacity="0.7"/>
+        <line x1="85" y1="229" x2="96" y2="218" stroke="url(#chromeGrad)" stroke-width="0.8" opacity="0.7"/>
+
+        <!-- Headlamp -->
+        <ellipse cx="100" cy="208" rx="14" ry="9" fill="#d4ecf0" opacity="0.9"/>
+        <ellipse cx="100" cy="208" rx="14" ry="9" fill="none" stroke="url(#chromeGrad)" stroke-width="1.5"/>
+        <ellipse cx="100" cy="208" rx="9" ry="6" fill="rgba(255,255,255,0.4)"/>
+        <!-- Headlamp glow -->
+        <ellipse cx="100" cy="208" rx="22" ry="12" fill="rgba(212,236,240,0.08)"/>
+
+        <!-- Rear tail lamp -->
+        <rect x="786" y="210" width="8" height="20" rx="2" fill="#c0392b" opacity="0.9"/>
+        <rect x="786" y="210" width="8" height="20" rx="2" fill="none" stroke="url(#chromeGrad)" stroke-width="1"/>
+
+        <!-- Rear bumper -->
+        <path d="M 782,225 L 795,230 L 795,238 L 782,238 Z"
+              fill="url(#chromeGrad)" opacity="0.6"/>
+
+        <!-- Hood ornament / Aston emblem area -->
+        <path d="M 75,195 Q 90,185 105,188 L 105,195 Q 90,192 78,198 Z"
+              fill="none" stroke="url(#chromeGrad)" stroke-width="1" opacity="0.5"/>
+
+        <!-- Wing vent / side scoop -->
+        <path d="M 155,172 Q 165,168 175,170 L 178,180 Q 168,178 156,182 Z"
+              fill="#0d1f17" stroke="rgba(201,168,76,0.3)" stroke-width="1"/>
+
+        <!-- Door handle -->
+        <rect x="430" y="160" width="24" height="5" rx="2.5" fill="url(#chromeGrad)" opacity="0.8"/>
+
+        <!-- Rear door handle -->
+        <rect x="570" y="158" width="20" height="5" rx="2.5" fill="url(#chromeGrad)" opacity="0.7"/>
+
+        <!-- Wing mirror -->
+        <path d="M 280,128 L 268,118 Q 262,114 264,110 L 275,108 Q 284,108 288,115 L 290,122 Z"
+              fill="url(#bodyGrad)" stroke="#2a4a38" stroke-width="1"/>
+
+        <!-- Bonnet centre seam -->
+        <path d="M 100,205 Q 200,175 300,162 L 340,158"
+              fill="none" stroke="rgba(201,168,76,0.15)" stroke-width="1" stroke-dasharray="6,8"/>
+
+        <!-- Front wheel arch -->
+        <path d="M 118,238 Q 120,210 140,192 Q 160,180 185,180 Q 210,180 228,192 Q 248,204 250,220 L 252,238 Z"
+              fill="#0a0d08" stroke="#1b3a2d" stroke-width="2"/>
+
+        <!-- Rear wheel arch -->
+        <path d="M 560,238 Q 562,208 582,192 Q 602,178 630,178 Q 658,178 676,192 Q 694,206 696,222 L 698,238 Z"
+              fill="#0a0d08" stroke="#1b3a2d" stroke-width="2"/>
+
+        <!-- Body below windows - sill / rocker -->
+        <path d="M 120,190 Q 250,200 430,202 L 640,200 L 760,190 L 762,238 L 118,238 Z"
+              fill="#122a1e" opacity="0.5"/>
+
+      </g>
+
+      <!-- FRONT WHEEL -->
+      <g id="wheel-front" transform="translate(185, 238)">
+        <!-- Tyre -->
+        <circle cx="0" cy="0" r="52" fill="#111" stroke="#2a2520" stroke-width="2"/>
+        <circle cx="0" cy="0" r="52" fill="none" stroke="#3a3530" stroke-width="3"/>
+        <!-- Tyre sidewall detail -->
+        <circle cx="0" cy="0" r="48" fill="none" stroke="rgba(201,168,76,0.1)" stroke-width="1"/>
+        <!-- Rim -->
+        <circle cx="0" cy="0" r="36" fill="url(#wheelGrad)" stroke="#4a4035" stroke-width="1.5"/>
+        <!-- Wire wheel spokes -->
+        <g stroke="url(#chromeGrad)" stroke-width="1.2" opacity="0.8" id="spokes-front">
+          <line x1="0" y1="-36" x2="0" y2="36"/>
+          <line x1="-36" y1="0" x2="36" y2="0"/>
+          <line x1="-25.5" y1="-25.5" x2="25.5" y2="25.5"/>
+          <line x1="25.5" y1="-25.5" x2="-25.5" y2="25.5"/>
+          <line x1="-14" y1="-33" x2="14" y2="33"/>
+          <line x1="33" y1="-14" x2="-33" y2="14"/>
+          <line x1="-33" y1="-14" x2="33" y2="14"/>
+          <line x1="-14" y1="33" x2="14" y2="-33"/>
+        </g>
+        <!-- Hub cap -->
+        <circle cx="0" cy="0" r="8" fill="url(#hubGrad)"/>
+        <circle cx="0" cy="0" r="5" fill="none" stroke="#1a6fa8" stroke-width="1.5"/>
+        <!-- Hub bolt dots -->
+        <circle cx="0" cy="-6.5" r="1.2" fill="#c9a84c"/>
+        <circle cx="6.5" cy="0" r="1.2" fill="#c9a84c"/>
+        <circle cx="0" cy="6.5" r="1.2" fill="#c9a84c"/>
+        <circle cx="-6.5" cy="0" r="1.2" fill="#c9a84c"/>
+      </g>
+
+      <!-- REAR WHEEL -->
+      <g id="wheel-rear" transform="translate(630, 238)">
+        <!-- Tyre -->
+        <circle cx="0" cy="0" r="52" fill="#111" stroke="#2a2520" stroke-width="2"/>
+        <circle cx="0" cy="0" r="48" fill="none" stroke="rgba(201,168,76,0.1)" stroke-width="1"/>
+        <!-- Rim -->
+        <circle cx="0" cy="0" r="36" fill="url(#wheelGrad)" stroke="#4a4035" stroke-width="1.5"/>
+        <!-- Wire wheel spokes -->
+        <g stroke="url(#chromeGrad)" stroke-width="1.2" opacity="0.8" id="spokes-rear">
+          <line x1="0" y1="-36" x2="0" y2="36"/>
+          <line x1="-36" y1="0" x2="36" y2="0"/>
+          <line x1="-25.5" y1="-25.5" x2="25.5" y2="25.5"/>
+          <line x1="25.5" y1="-25.5" x2="-25.5" y2="25.5"/>
+          <line x1="-14" y1="-33" x2="14" y2="33"/>
+          <line x1="33" y1="-14" x2="-33" y2="14"/>
+          <line x1="-33" y1="-14" x2="33" y2="14"/>
+          <line x1="-14" y1="33" x2="14" y2="-33"/>
+        </g>
+        <!-- Hub cap -->
+        <circle cx="0" cy="0" r="8" fill="url(#hubGrad)"/>
+        <circle cx="0" cy="0" r="5" fill="none" stroke="#1a6fa8" stroke-width="1.5"/>
+        <circle cx="0" cy="-6.5" r="1.2" fill="#c9a84c"/>
+        <circle cx="6.5" cy="0" r="1.2" fill="#c9a84c"/>
+        <circle cx="0" cy="6.5" r="1.2" fill="#c9a84c"/>
+        <circle cx="-6.5" cy="0" r="1.2" fill="#c9a84c"/>
+      </g>
+
+      <!-- Road line under car -->
+      <line x1="20" y1="290" x2="800" y2="290" stroke="rgba(201,168,76,0.15)" stroke-width="1"/>
+
+      <!-- Speed lines (visible when moving) -->
+      <g id="speed-lines" opacity="0">
+        <line x1="-20" y1="200" x2="50" y2="200" stroke="rgba(201,168,76,0.4)" stroke-width="1"/>
+        <line x1="-40" y1="210" x2="30" y2="210" stroke="rgba(201,168,76,0.25)" stroke-width="0.8"/>
+        <line x1="-30" y1="220" x2="40" y2="220" stroke="rgba(201,168,76,0.2)" stroke-width="0.6"/>
+        <line x1="-50" y1="195" x2="20" y2="195" stroke="rgba(201,168,76,0.2)" stroke-width="0.8"/>
+        <line x1="-20" y1="228" x2="35" y2="228" stroke="rgba(201,168,76,0.15)" stroke-width="0.5"/>
+      </g>
+    </svg>
+  </div>
+
+  <!-- NAV -->
+  <nav>
+    <div class="logo">WilSam<span>.</span></div>
+    <ul>
+      <li><a href="#about">À propos</a></li>
+      <li><a href="#services">Services</a></li>
+      <li><a href="#how">Process</a></li>
+      <li><a href="#contact" class="nav-cta">Nous contacter</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <section id="hero">
+    <p class="hero-eyebrow"><span class="gold-rule"></span>WilSam Studio — Bordeaux, France</p>
+    <h1>
+      <span class="line"><span>Votre site,</span></span>
+      <span class="line"><span class="stroke-word">livré</span> <span class="accent-word">vite.</span></span>
+      <span class="line"><span>Bien fait.</span></span>
+    </h1>
+    <p class="hero-sub">Deux étudiants en Terminale passionnés par le web. On conçoit des sites vitrines clairs, rapides et hébergés — sans vous compliquer la vie.</p>
+    <div class="hero-actions">
+      <a href="#contact" class="btn-primary">
+        Démarrer un projet
+        <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>
+      <a href="#services" class="btn-ghost">Voir nos services</a>
+    </div>
+
+    <div class="hero-deco">
+      <div class="deco-card">
+        <div class="deco-tag">✦ Site vitrine</div>
+        <h3>Page d'accueil pro</h3>
+        <p>Design sur mesure, responsive, hébergé et référencé dès le premier jour.</p>
+        <div class="deco-stack">
+          <span class="deco-pill">HTML / CSS</span>
+          <span class="deco-pill">Responsive</span>
+          <span class="deco-pill">GitHub Pages</span>
+          <span class="deco-pill">SEO de base</span>
+        </div>
+        <div class="deco-bottom">
+          <div class="deco-price">Gratuit <small>l'hébergement</small></div>
+          <div style="font-size:0.68rem;color:var(--muted);font-family:'DM Mono',monospace;letter-spacing:0.05em;">Domaine à votre charge</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="scroll-hint">
+      <div class="scroll-line"></div>
+      <span>Scroll</span>
+    </div>
+  </section>
+
+  <!-- MARQUEE -->
+  <div class="marquee-wrap">
+    <div class="marquee-track" id="marqueeTrack">
+      <span class="marquee-item"><span class="romb"></span> Sites vitrines</span>
+      <span class="marquee-item"><span class="romb"></span> Landing pages</span>
+      <span class="marquee-item"><span class="romb"></span> Hébergement gratuit</span>
+      <span class="marquee-item"><span class="romb"></span> Design sur mesure</span>
+      <span class="marquee-item"><span class="romb"></span> Responsive mobile</span>
+      <span class="marquee-item"><span class="romb"></span> SEO de base inclus</span>
+      <span class="marquee-item"><span class="romb"></span> Livraison rapide</span>
+      <span class="marquee-item"><span class="romb"></span> Sites vitrines</span>
+      <span class="marquee-item"><span class="romb"></span> Landing pages</span>
+      <span class="marquee-item"><span class="romb"></span> Hébergement gratuit</span>
+      <span class="marquee-item"><span class="romb"></span> Design sur mesure</span>
+      <span class="marquee-item"><span class="romb"></span> Responsive mobile</span>
+      <span class="marquee-item"><span class="romb"></span> SEO de base inclus</span>
+      <span class="marquee-item"><span class="romb"></span> Livraison rapide</span>
+    </div>
+  </div>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="about-left reveal">
+      <div class="section-eyebrow"><span class="gold-rule"></span>À propos</div>
+      <h2>Deux cerveaux,<br/>un seul objectif.</h2>
+      <p style="margin-top:1.5rem;">On est <strong>William</strong> et <strong>Samuel</strong>, deux lycéens en Terminale à Bordeaux. On a appris à coder par curiosité, et on s'est rendu compte qu'on pouvait vraiment aider des entreprises à exister en ligne.</p>
+      <p>On ne prétend pas être une agence de 40 personnes. On est deux, on est sérieux, et on livre. Notre taille est notre avantage : <strong>communication directe, réactivité et prix honnêtes.</strong></p>
+      <p>Vous savez toujours à qui vous parlez.</p>
+    </div>
+
+    <div class="reveal">
+      <div class="team-grid">
+        <div class="team-card" data-initial="W">
+          <div class="team-initial">W</div>
+          <h4>William</h4>
+          <p>Front-end & design. Terminale Générale, spé Maths. Obsédé par les détails visuels.</p>
+        </div>
+        <div class="team-card" data-initial="S">
+          <div class="team-initial" style="border-color:rgba(184,176,160,0.4);color:var(--chrome);">S</div>
+          <h4>Samuel</h4>
+          <p>Intégration & logique. Terminale Générale. Amoureux des structures propres et du code lisible.</p>
+        </div>
+        <div class="team-promise">
+          <p>💡 <strong>Notre promesse :</strong> on vous livre un site qui vous ressemble, hébergé et en ligne, sans que vous ayez à gérer la technique. Le domaine ? Vous le choisissez (ou on vous accompagne), on s'occupe du reste.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="about-stats reveal">
+      <div class="stat">
+        <span class="stat-num">100%</span>
+        <span class="stat-label">Responsive mobile</span>
+      </div>
+      <div class="stat">
+        <span class="stat-num">0€</span>
+        <span class="stat-label">D'hébergement pour vous</span>
+      </div>
+      <div class="stat">
+        <span class="stat-num">7j</span>
+        <span class="stat-label">Délai moyen de livraison</span>
+      </div>
+      <div class="stat">
+        <span class="stat-num">2</span>
+        <span class="stat-label">Vrais humains disponibles</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICES -->
+  <section id="services">
+    <div class="services-header reveal">
+      <div>
+        <div class="section-eyebrow"><span class="gold-rule"></span>Ce qu'on fait</div>
+        <h2>Nos services</h2>
+      </div>
+      <p>Chaque site est conçu de zéro. Pas de template recyclé.</p>
+    </div>
+
+    <div class="services-grid reveal">
+      <div class="service-item">
+        <div class="service-num">— 01</div>
+        <span class="service-icon">🎨</span>
+        <h3>Site vitrine</h3>
+        <p>Présenter votre activité de façon professionnelle, claire et convaincante. Idéal pour artisans, commerces, freelances ou associations.</p>
+        <ul class="service-included">
+          <li>Design personnalisé à votre image</li>
+          <li>Sections : accueil, services, contact</li>
+          <li>Formulaire de contact intégré</li>
+          <li>Optimisé pour mobile</li>
+        </ul>
+        <div class="service-price">
+          <span class="price-val" style="color:var(--saphir);">150€</span>
+          <span class="price-note">livraison incluse</span>
+        </div>
+      </div>
+      <div class="service-item">
+        <div class="service-num">— 02</div>
+        <span class="service-icon">⚡</span>
+        <h3>Landing page</h3>
+        <p>Une page unique et percutante pour convertir vos visiteurs. Lancement de produit, événement, offre spéciale — on la rend irrésistible.</p>
+        <ul class="service-included">
+          <li>Structure orientée conversion</li>
+          <li>Design accrocheur</li>
+          <li>Appels à l'action clairs</li>
+          <li>Chargement ultra-rapide</li>
+        </ul>
+        <div class="service-price">
+          <span class="price-val" style="color:var(--chrome);">200€</span>
+          <span class="price-note">sans hébergement</span>
+        </div>
+      </div>
+      <div class="service-item">
+        <div class="service-num">— 03</div>
+        <span class="service-icon">🌐</span>
+        <h3>Landing page + hébergement</h3>
+        <p>La formule complète : landing page sur mesure + mise en ligne immédiate via GitHub Pages. Votre site est live dès la livraison.</p>
+        <ul class="service-included">
+          <li>Landing page design accrocheur</li>
+          <li>Hébergement via GitHub Pages</li>
+          <li>HTTPS inclus (site sécurisé)</li>
+          <li>Référencement Google Search Console</li>
+        </ul>
+        <div class="service-price">
+          <span class="price-val" style="color:var(--gold-light);">250€</span>
+          <span class="price-note">tout inclus sauf domaine</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW -->
+  <section id="how">
+    <div class="how-header reveal">
+      <div class="section-eyebrow"><span class="gold-rule"></span>Comment ça marche</div>
+      <h2>Simple comme bonjour.</h2>
+    </div>
+    <div class="how-grid reveal">
+      <div class="how-step" data-num="01">
+        <div class="step-num">— 01</div>
+        <h3>On discute</h3>
+        <p>Vous nous expliquez votre activité, vos attentes, vos goûts. Un échange rapide suffit — pas de réunion de 2h.</p>
+      </div>
+      <div class="how-step" data-num="02">
+        <div class="step-num">— 02</div>
+        <h3>On conçoit</h3>
+        <p>On propose une maquette. Vous validez ou suggérez des retours. On itère jusqu'à ce que ce soit parfait pour vous.</p>
+      </div>
+      <div class="how-step" data-num="03">
+        <div class="step-num">— 03</div>
+        <h3>On code</h3>
+        <p>On développe le site en HTML/CSS/JS. Code propre, rapide, sans dépendances inutiles. Zéro bloat.</p>
+      </div>
+      <div class="how-step" data-num="04">
+        <div class="step-num">— 04</div>
+        <h3>On publie</h3>
+        <p>Votre site est en ligne en quelques minutes. Vous recevez le lien, les accès, et on reste disponibles si besoin.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOSTING BADGE -->
+  <div class="hosting-badge reveal">
+    <div class="hosting-badge-left">
+      <h3>🔗 L'hébergement, c'est <span>gratuit</span> pour vous.</h3>
+      <p>On utilise <strong style="color:var(--saphir);font-weight:400;">GitHub Pages</strong> pour héberger votre site sans frais. Votre site sera accessible sur une URL du type <code style="color:var(--saphir);background:rgba(26,111,168,0.08);padding:0.1rem 0.4rem;">votreentreprise.github.io</code>. Si vous souhaitez un domaine personnalisé comme <code style="color:var(--saphir);background:rgba(26,111,168,0.08);padding:0.1rem 0.4rem;">votreentreprise.fr</code>, c'est vous qui le louez (~10€/an), et on fait la liaison.</p>
+      <div class="hosting-pills">
+        <span class="hosting-pill">
+          <svg viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.2"/><path d="M4 6l1.5 1.5L8 4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+          Hébergement 0€
+        </span>
+        <span class="hosting-pill">
+          <svg viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.2"/><path d="M4 6l1.5 1.5L8 4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+          HTTPS sécurisé
+        </span>
+        <span class="hosting-pill">
+          <svg viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.2"/><path d="M4 6l1.5 1.5L8 4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+          Domaine custom possible
+        </span>
+        <span class="hosting-pill">
+          <svg viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.2"/><path d="M4 6l1.5 1.5L8 4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+          Google Search Console
+        </span>
+      </div>
+    </div>
+    <div class="hosting-big">0€ / mois</div>
+  </div>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <div class="contact-inner">
+      <div class="section-eyebrow"><span class="gold-rule"></span>Contact</div>
+      <h2>Parlons de<br/>votre projet.</h2>
+      <p>Décrivez-nous ce que vous cherchez. On vous répond dans les 24h.<br/>Pas de jargon, pas de devis obscur — juste une conversation honnête.</p>
+
+      <div class="email-cards reveal">
+        <a href="mailto:william.sabatier.pro@gmail.com" class="email-card wil">
+          <div class="email-initial">W</div>
+          <div>
+            <h5>William</h5>
+            <span>william.sabatier.pro@gmail.com</span>
+          </div>
+        </a>
+        <a href="mailto:samuel.cavagni@gmail.com" class="email-card sam">
+          <div class="email-initial">S</div>
+          <div>
+            <h5>Samuel</h5>
+            <span>samuel.cavagni@gmail.com</span>
+          </div>
+        </a>
+      </div>
+
+      <div class="contact-form reveal">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="nom">Votre nom</label>
+            <input type="text" id="nom" placeholder="Jean Dupont" />
+          </div>
+          <div class="form-group">
+            <label for="email">Votre email</label>
+            <input type="email" id="email" placeholder="jean@exemple.fr" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="type">Type de projet</label>
+            <select id="type">
+              <option value="">Choisir...</option>
+              <option>Site vitrine — 150€</option>
+              <option>Landing page — 200€</option>
+              <option>Landing page + hébergement — 250€</option>
+              <option>Autre / Je ne sais pas encore</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="budget">Budget estimé</label>
+            <select id="budget">
+              <option value="">Choisir...</option>
+              <option>150€ (site vitrine)</option>
+              <option>200€ (landing page)</option>
+              <option>250€ (landing page + hébergement)</option>
+              <option>On en discute</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group full">
+            <label for="message">Décrivez votre projet</label>
+            <textarea id="message" placeholder="Mon activité est... j'aurais besoin de..."></textarea>
+          </div>
+        </div>
+        <div class="form-submit">
+          <button class="btn-primary" onclick="handleSubmit()" type="button">
+            Envoyer par email
+            <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-logo">WilSam<span>.</span></div>
+    <p>© 2025 WilSam Studio — Bordeaux, France</p>
+    <p style="font-size:0.68rem;">Deux lycéens qui codent. Sérieusement.</p>
+  </footer>
+
+  <script>
+    // ── CHESS BOARD GENERATION ──
+    const grid = document.getElementById('chessGrid');
+    for (let r = 0; r < 18; r++) {
+      for (let c = 0; c < 12; c++) {
+        const sq = document.createElement('div');
+        sq.className = 'sq ' + ((r + c) % 2 === 0 ? 'light' : 'dark');
+        grid.appendChild(sq);
+      }
+    }
+
+    // ── FLOATING CHESS PIECES ──
+    const piecesSVGs = [
+      // King
+      `<svg viewBox="0 0 45 45" width="80"><g fill="#f5f0e8" stroke="#1a6fa8" stroke-width="1.5"><path d="M 22.5,11.63 L 22.5,6"/><path d="M 20,8 L 25,8"/><path d="M 22.5,25 C 22.5,25 27,17.5 25.5,14.5 C 25.5,14.5 24.5,12 22.5,12 C 20.5,12 19.5,14.5 19.5,14.5 C 18,17.5 22.5,25 22.5,25"/><path d="M 12.5,37 C 13,31.5 20.5,30.5 22.5,30.5 C 24.5,30.5 32,31.5 32.5,37 L 12.5,37 z"/><path d="M 11.5,37 C 11.5,37.666 12,38 13,38 L 32,38 C 33,38 33.5,37.666 33.5,37 L 11.5,37 z"/><path d="M 22.5,30.5 C 22.5,30.5 16,27.5 15,25.5 C 14,23.5 18.5,21 18.5,21 C 18.5,21 14,19.5 14,17.5 C 14,15 17,13.5 22.5,13.5 C 28,13.5 31,15 31,17.5 C 31,19.5 26.5,21 26.5,21 C 26.5,21 31,23.5 30,25.5 C 29,27.5 22.5,30.5 22.5,30.5 z"/></g></svg>`,
+      // Queen
+      `<svg viewBox="0 0 45 45" width="80"><g fill="#f5f0e8" stroke="#1a6fa8" stroke-width="1.5"><path d="M 9,26 C 17.5,24.5 30,24.5 36,26 L 38.5,13.5 L 31,25 L 30.7,10.9 L 24.5,24.5 L 22.5,10 L 20.5,24.5 L 14.3,10.9 L 14,25 L 6.5,13.5 L 9,26 z"/><path d="M 9,26 C 9,28 10.5,28 11.5,30 C 12.5,31.5 12.5,31 12,33.5 C 10.5,34.5 11,36 11,36 C 9.5,37.5 11.5,38.5 11.5,38.5 C 17.5,39.5 27.5,39.5 33.5,38.5 C 33.5,38.5 35.5,37.5 34,36 C 34,36 34.5,34.5 33,33.5 C 32.5,31 32.5,31.5 33.5,30 C 34.5,28 36,28 36,26 C 27.5,24.5 17.5,24.5 9,26 z"/></g></svg>`,
+      // Rook
+      `<svg viewBox="0 0 45 45" width="70"><g fill="#f5f0e8" stroke="#1a6fa8" stroke-width="1.5"><path d="M 9,39 L 36,39 L 36,36 L 9,36 L 9,39 z"/><path d="M 12,36 L 12,32 L 33,32 L 33,36 L 12,36 z"/><path d="M 11,14 L 11,9 L 15,9 L 15,11 L 20,11 L 20,9 L 25,9 L 25,11 L 30,11 L 30,9 L 34,9 L 34,14 L 11,14 z"/><path d="M 34,14 L 31,17 L 14,17 L 11,14"/><path d="M 31,17 L 31,29.5 L 14,29.5 L 14,17"/><path d="M 31,29.5 L 32.5,32 L 12.5,32 L 14,29.5"/></g></svg>`,
+      // Bishop
+      `<svg viewBox="0 0 45 45" width="70"><g fill="#f5f0e8" stroke="#1a6fa8" stroke-width="1.5"><path d="M 9,36 C 12.39,35.03 19.11,36.43 22.5,34 C 25.89,36.43 32.61,35.03 36,36 C 36,36 37.65,36.54 38.5,38 C 39.44,39.01 39.29,39.5 38.5,40 C 34.05,41.55 9.95,41.55 6.5,40 C 5.71,39.5 5.56,39.01 6.5,38 C 7.35,36.54 9,36 9,36 z"/><path d="M 15,32 C 17.5,34.5 27.5,34.5 30,32 C 30.5,30.5 30,30 30,30 C 30,27.5 27.5,26 22.5,26 C 17.5,26 15,27.5 15,30 C 15,30 14.5,30.5 15,32 z"/><path d="M 22.5,15.5 C 22.5,15.5 20,18 18,22 C 16.5,24.5 15,25.5 15,30 C 17.5,26.5 22.5,25 22.5,25 C 22.5,25 27.5,26.5 30,30 C 30,25.5 28.5,24.5 27,22 C 25,18 22.5,15.5 22.5,15.5 z"/><circle cx="22.5" cy="12" r="3.5"/><path d="M 22,8 L 23,8 L 23,10 L 22,10 L 22,8 z"/></g></svg>`,
+      // Knight
+      `<svg viewBox="0 0 45 45" width="70"><g fill="#f5f0e8" stroke="#1a6fa8" stroke-width="1.5"><path d="M 22,10 C 32.5,11 38.5,18 38,39 L 15,39 C 15,30 25,32.5 23,18"/><path d="M 24,18 C 24.38,20.91 18.45,25.37 16,27 C 13,29 13.18,31.34 11,31 C 9.958,30.06 12.41,27.96 11,28 C 10,28 11.19,29.23 10,30 C 9,30 5.997,31 6,26 C 6,24 12,14 12,14 C 12,14 13.89,12.1 14,10.5 C 13.27,9.506 13.5,8.5 13.5,7.5 C 14.5,6.5 16.5,10 16.5,10 L 18.5,10 C 18.5,10 19.28,8.008 21,7 C 22,7 22,10 22,10"/><path d="M 9.5,25.5 A 0.5,0.5 0 1 1 8.5,25.5 A 0.5,0.5 0 1 1 9.5,25.5 z" fill="#c9a84c"/><path d="M 15,15.5 A 0.5,1.5 0 1 1 14,15.5 A 0.5,1.5 0 1 1 15,15.5 z" transform="matrix(0.866,0.5,-0.5,0.866,9.693,-5.173)" fill="#c9a84c"/></g></svg>`,
+      // Pawn
+      `<svg viewBox="0 0 45 45" width="55"><g fill="#f5f0e8" stroke="#1a6fa8" stroke-width="1.5"><path d="M 22.5,9 C 20.29,9 18.5,10.79 18.5,13 C 18.5,15.21 20.29,17 22.5,17 C 24.71,17 26.5,15.21 26.5,13 C 26.5,10.79 24.71,9 22.5,9 z"/><path d="M 22.5,17 C 17.5,17.5 15,25 15,27.5 C 17.5,25.83 19.84,25 22.5,25 C 25.16,25 27.5,25.83 30,27.5 C 30,25 27.5,17.5 22.5,17 z"/><path d="M 11.5,37 C 17,40.5 27,40.5 33.5,37 L 34.5,37 C 34.5,37 37,37.5 37,38.5 C 37,39.5 36.5,40 35,40 C 30.5,38.5 14.5,38.5 10,40 C 8.5,40 8,39.5 8,38.5 C 8,37.5 10.5,37 10.5,37 L 11.5,37 z"/><path d="M 11.5,37 L 11.5,32 C 11.5,32 13,27.5 22.5,27.5 C 32,27.5 33.5,32 33.5,32 L 33.5,37 L 11.5,37 z"/></g></svg>`
+    ];
+
+    const piecesContainer = document.getElementById('chessPiecesBg');
+    const positions = [
+      {x: 5, y: 10}, {x: 85, y: 5}, {x: 15, y: 55}, {x: 75, y: 70},
+      {x: 45, y: 20}, {x: 60, y: 80}, {x: 25, y: 85}, {x: 90, y: 40},
+      {x: 35, y: 35}, {x: 70, y: 15}, {x: 10, y: 75}, {x: 55, y: 50},
+      {x: 80, y: 60}, {x: 20, y: 45}, {x: 50, y: 90}, {x: 40, y: 5}
+    ];
+
+    positions.forEach((pos, i) => {
+      const div = document.createElement('div');
+      div.className = 'chess-piece-float';
+      div.style.cssText = `
+        left: ${pos.x}%;
+        top: ${pos.y}%;
+        font-size: ${50 + Math.random() * 60}px;
+        animation: floatPiece ${6 + Math.random() * 8}s ease-in-out ${Math.random() * 4}s infinite;
+        transform-origin: center;
+      `;
+      div.innerHTML = piecesSVGs[i % piecesSVGs.length];
+      piecesContainer.appendChild(div);
+    });
+
+    // ── CURSOR ──
+    const cursor = document.getElementById('cursor');
+    const ring = document.getElementById('cursorRing');
+    let mx = 0, my = 0, rx = 0, ry = 0;
+    document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+    function animateCursor() {
+      cursor.style.left = mx + 'px'; cursor.style.top = my + 'px';
+      rx += (mx - rx) * 0.12; ry += (my - ry) * 0.12;
+      ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
+      requestAnimationFrame(animateCursor);
+    }
+    animateCursor();
+    document.querySelectorAll('a, button, input, textarea, select').forEach(el => {
+      el.addEventListener('mouseenter', () => { ring.style.width='52px'; ring.style.height='52px'; ring.style.opacity='0.3'; });
+      el.addEventListener('mouseleave', () => { ring.style.width='32px'; ring.style.height='32px'; ring.style.opacity='0.5'; });
+    });
+
+    // ── ASTON MARTIN VERTICAL RAIL ──
+    const aston = document.getElementById('aston-martin');
+    const astonRail = document.getElementById('aston-rail');
+    const speedLines = document.getElementById('speed-lines');
+    const wheelFront = document.getElementById('spokes-front');
+    const wheelRear = document.getElementById('spokes-rear');
+
+    let rotation = 0;
+    let lastScroll = window.scrollY;
+    let currentY = -130; // start above viewport
+    let targetY = -130;
+
+    function updateAston() {
+      const scrollY = window.scrollY;
+      const maxScroll = Math.max(1, document.body.scrollHeight - window.innerHeight);
+      const progress = scrollY / maxScroll; // 0 → 1
+
+      const scrollDelta = scrollY - lastScroll;
+      lastScroll = scrollY;
+
+      // Map scroll progress to vertical position on the rail
+      // Car travels from just above top (-100px) to just below bottom (vh + 20px)
+      const vh = window.innerHeight;
+      targetY = -120 + progress * (vh + 140);
+
+      // Smooth follow
+      currentY += (targetY - currentY) * 0.09;
+
+      // Wheel rotation
+      rotation += Math.abs(scrollDelta) * 1.1;
+
+      // Speed lines opacity
+      const speed = Math.abs(scrollDelta);
+      if (speedLines) speedLines.setAttribute('opacity', Math.min(speed * 0.12, 0.7).toString());
+
+      // Apply
+      if (wheelFront) wheelFront.style.transform = `rotate(${rotation}deg)`;
+      if (wheelRear)  wheelRear.style.transform  = `rotate(${rotation}deg)`;
+
+      // Position the car along the rail (centered on the 56px strip, rotated 90°)
+      aston.style.top = currentY + 'px';
+
+      requestAnimationFrame(updateAston);
+    }
+    requestAnimationFrame(updateAston);
+
+    // ── SCROLL REVEAL ──
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach((e, i) => {
+        if (e.isIntersecting) {
+          setTimeout(() => e.target.classList.add('visible'), i * 80);
+          observer.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.1 });
+    reveals.forEach(el => observer.observe(el));
+
+    // ── FORM SUBMIT ──
+    function handleSubmit() {
+      const nom = document.getElementById('nom').value || '(non renseigné)';
+      const email = document.getElementById('email').value || '(non renseigné)';
+      const type = document.getElementById('type').value || '(non renseigné)';
+      const budget = document.getElementById('budget').value || '(non renseigné)';
+      const msg = document.getElementById('message').value || '(non renseigné)';
+      const subject = encodeURIComponent('Demande de projet — WilSam Studio');
+      const body = encodeURIComponent(
+        `Bonjour William & Samuel,\n\nNom : ${nom}\nEmail : ${email}\nType de projet : ${type}\nBudget : ${budget}\n\nDescription :\n${msg}\n\n---\nEnvoyé depuis wilsamstudio.github.io`
+      );
+      window.location.href = `mailto:william.sabatier.pro@gmail.com,samuel.cavagni@gmail.com?subject=${subject}&body=${body}`;
+      const btn = document.querySelector('.form-submit .btn-primary');
+      btn.textContent = '✓ Ouverture de votre messagerie…';
+      btn.style.background = 'var(--chrome)';
+      btn.style.color = '#fff';
+      setTimeout(() => {
+        btn.innerHTML = 'Envoyer par email <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:16px"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+        btn.style.background = '';
+        btn.style.color = '';
+      }, 3000);
+    }
+  </script>
+</body>
+</html>
