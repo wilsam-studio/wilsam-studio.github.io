@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Aurora — Atelier Aurore, fleuriste</title>
+<meta name="description" content="Template Aurora par WilSam Studio — exemple : atelier floral. Design lumineux et aérien pour les métiers créatifs." />
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;1,9..144,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{ --paper:#FBF8F3; --paper-2:#F3ECE2; --ink:#2E2A26; --ink-soft:#6B655C; --sage:#7C8B72; --sage-d:#5E6B55; --blush:#E4C6BF; --line:rgba(46,42,38,.12); }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{background:var(--paper);color:var(--ink);font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden;}
+  ::selection{background:var(--sage);color:var(--paper);}
+  .serif{font-family:'Fraunces',serif;}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 24px;}
+  a{color:inherit;text-decoration:none;}
+  .eyebrow{font-size:.66rem;letter-spacing:.32em;text-transform:uppercase;color:var(--sage-d);}
+  .btn{display:inline-block;padding:.9rem 1.8rem;border-radius:100px;background:var(--ink);color:var(--paper);font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;transition:transform .4s cubic-bezier(.19,1,.22,1),background .3s;}
+  .btn:hover{transform:translateY(-2px);background:var(--sage-d);}
+  .btn-ghost{background:transparent;color:var(--ink);border:1px solid var(--line);}
+  .btn-ghost:hover{background:var(--ink);color:var(--paper);}
+  /* nav */
+  nav{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;align-items:center;justify-content:space-between;padding:20px 24px;transition:background .4s,backdrop-filter .4s;}
+  nav.scrolled{background:rgba(251,248,243,.82);backdrop-filter:blur(14px);border-bottom:1px solid var(--line);}
+  nav .brand{font-family:'Fraunces',serif;font-size:1.35rem;letter-spacing:.02em;}
+  nav .links{display:flex;gap:30px;align-items:center;}
+  nav .links a{font-size:.74rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft);transition:color .3s;}
+  nav .links a:hover{color:var(--ink);}
+  .hamb{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;}
+  .hamb span{width:22px;height:1.5px;background:var(--ink);}
+  /* hero */
+  .hero{min-height:100vh;display:grid;grid-template-columns:1.05fr .95fr;align-items:center;gap:40px;padding-top:90px;}
+  .hero-copy h1{font-family:'Fraunces',serif;font-weight:300;font-size:clamp(2.8rem,6vw,5.4rem);line-height:1.02;letter-spacing:-.01em;margin:18px 0 22px;}
+  .hero-copy h1 em{font-style:italic;color:var(--sage-d);}
+  .hero-copy p{font-size:1.05rem;line-height:1.7;color:var(--ink-soft);max-width:440px;margin-bottom:32px;}
+  .hero-figure{position:relative;height:76vh;border-radius:220px 220px 24px 24px;overflow:hidden;background:
+      radial-gradient(circle at 50% 20%, var(--blush), transparent 60%),
+      linear-gradient(160deg, var(--paper-2), #E7DECF);
+      border:1px solid var(--line);}
+  .hero-figure .ph{position:absolute;inset:0;display:flex;align-items:flex-end;justify-content:center;padding:26px;}
+  .hero-figure .ph span{font-family:'Fraunces',serif;font-style:italic;color:var(--ink-soft);font-size:.9rem;opacity:.7;}
+  .petal{position:absolute;border-radius:50% 50% 50% 0;background:var(--blush);opacity:.5;}
+  /* section */
+  section{padding:110px 0;}
+  .sec-head{max-width:640px;margin-bottom:56px;}
+  .sec-head h2{font-family:'Fraunces',serif;font-weight:400;font-size:clamp(2rem,4.5vw,3.4rem);line-height:1.06;margin-top:14px;}
+  /* about */
+  .about{background:var(--paper-2);border-radius:32px;}
+  .about .grid{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center;}
+  .about p{font-size:1.02rem;line-height:1.8;color:var(--ink-soft);margin-bottom:16px;}
+  .about .stat-row{display:flex;gap:40px;margin-top:24px;}
+  .about .stat b{font-family:'Fraunces',serif;font-size:2.4rem;display:block;line-height:1;}
+  .about .stat span{font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;color:var(--sage-d);}
+  /* bouquets */
+  .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:26px;}
+  .card{border-radius:20px;overflow:hidden;background:var(--paper);border:1px solid var(--line);transition:transform .5s cubic-bezier(.19,1,.22,1),box-shadow .5s;}
+  .card:hover{transform:translateY(-8px);box-shadow:0 30px 60px rgba(46,42,38,.12);}
+  .card .img{aspect-ratio:4/5;background:linear-gradient(160deg,var(--paper-2),var(--blush));display:flex;align-items:center;justify-content:center;}
+  .card .img span{font-family:'Fraunces',serif;font-size:3rem;color:rgba(46,42,38,.16);}
+  .card .body{padding:22px;}
+  .card h3{font-family:'Fraunces',serif;font-weight:500;font-size:1.3rem;margin-bottom:6px;}
+  .card .price{color:var(--sage-d);font-size:.9rem;}
+  .card p{color:var(--ink-soft);font-size:.9rem;line-height:1.6;margin-top:8px;}
+  /* services */
+  .svc{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--line);border-radius:24px;overflow:hidden;border:1px solid var(--line);}
+  .svc .item{background:var(--paper);padding:40px;}
+  .svc .item .n{font-family:'Fraunces',serif;font-style:italic;color:var(--sage-d);font-size:1rem;}
+  .svc .item h3{font-family:'Fraunces',serif;font-weight:500;font-size:1.5rem;margin:10px 0;}
+  .svc .item p{color:var(--ink-soft);line-height:1.7;}
+  /* contact */
+  .contact{background:var(--ink);color:var(--paper);border-radius:32px;text-align:center;padding:96px 24px;}
+  .contact h2{font-family:'Fraunces',serif;font-weight:300;font-size:clamp(2.2rem,5vw,4rem);margin-bottom:16px;}
+  .contact p{color:rgba(251,248,243,.7);max-width:420px;margin:0 auto 34px;line-height:1.7;}
+  .contact .btn{background:var(--blush);color:var(--ink);}
+  .contact .btn:hover{background:var(--paper);}
+  footer{padding:40px 0;text-align:center;color:var(--ink-soft);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;}
+  footer a{color:var(--sage-d);}
+  @media(max-width:860px){
+    .hero{grid-template-columns:1fr;}.hero-figure{height:52vh;order:-1;border-radius:24px;}
+    .about .grid{grid-template-columns:1fr;}.cards{grid-template-columns:1fr;}.svc{grid-template-columns:1fr;}
+    nav .links{display:none;}nav .links.open{display:flex;position:absolute;top:64px;right:16px;flex-direction:column;background:var(--paper);padding:20px 26px;border-radius:16px;border:1px solid var(--line);gap:18px;}
+    .hamb{display:flex;}
+  }
+</style>
+</head>
+<body>
+<nav id="nav">
+  <a class="brand" href="#">Atelier Aurore</a>
+  <div class="links" id="links">
+    <a href="#creations">Créations</a>
+    <a href="#histoire">L'atelier</a>
+    <a href="#services">Prestations</a>
+    <a href="#contact" class="btn btn-ghost" style="padding:.6rem 1.2rem;">Commander</a>
+  </div>
+  <button class="hamb" id="hamb" aria-label="Menu"><span></span><span></span><span></span></button>
+</nav>
+
+<header class="hero wrap">
+  <div class="hero-copy">
+    <span class="eyebrow">Fleuriste · Périgueux</span>
+    <h1>Des fleurs qui <em>racontent</em> quelque chose.</h1>
+    <p>Bouquets de saison, compositions sur mesure et abonnements floraux. Cueillies chaque matin, arrangées à la main dans notre atelier du centre-ville.</p>
+    <div style="display:flex;gap:14px;flex-wrap:wrap;">
+      <a href="#creations" class="btn">Voir les créations</a>
+      <a href="#contact" class="btn btn-ghost">Prendre rendez-vous</a>
+    </div>
+  </div>
+  <div class="hero-figure">
+    <div class="petal" style="width:120px;height:120px;top:14%;left:16%;transform:rotate(20deg);"></div>
+    <div class="petal" style="width:80px;height:80px;top:38%;right:20%;transform:rotate(-30deg);background:var(--sage);opacity:.35;"></div>
+    <div class="ph"><span>Votre photo d'atelier ici</span></div>
+  </div>
+</header>
+
+<section id="histoire" class="wrap">
+  <div class="about" style="padding:64px;">
+    <div class="grid">
+      <div>
+        <span class="eyebrow">L'atelier</span>
+        <h2 class="serif" style="font-family:'Fraunces',serif;font-weight:400;font-size:clamp(2rem,4.5vw,3.2rem);margin:14px 0 20px;">Le geste juste, la fleur juste.</h2>
+        <p>Depuis 2016, Aurore compose des bouquets qui ne ressemblent à aucun autre. Pas de catalogue figé : chaque création part de ce qui est beau ce jour-là, au marché comme au jardin.</p>
+        <p>Mariages, événements, ou simplement l'envie de faire plaisir — on écoute, puis on imagine avec vous.</p>
+        <div class="stat-row">
+          <div class="stat"><b>9 ans</b><span>d'atelier</span></div>
+          <div class="stat"><b>200+</b><span>mariages fleuris</span></div>
+          <div class="stat"><b>100%</b><span>de saison</span></div>
+        </div>
+      </div>
+      <div class="hero-figure" style="height:420px;border-radius:24px 24px 200px 200px;">
+        <div class="ph"><span>Portrait / atelier</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="creations" class="wrap">
+  <div class="sec-head"><span class="eyebrow">Créations</span><h2>Nos bouquets du moment.</h2></div>
+  <div class="cards">
+    <div class="card"><div class="img"><span>A</span></div><div class="body"><h3>Aube</h3><div class="price">dès 38 €</div><p>Renoncules, eucalyptus, tons pêche et crème. Doux et lumineux.</p></div></div>
+    <div class="card"><div class="img"><span>B</span></div><div class="body"><h3>Bruyère</h3><div class="price">dès 45 €</div><p>Champêtre et texturé — graminées, roses de jardin, feuillage argenté.</p></div></div>
+    <div class="card"><div class="img"><span>C</span></div><div class="body"><h3>Céleste</h3><div class="price">dès 62 €</div><p>Composition signature. Pivoines de saison et fleurs rares.</p></div></div>
+  </div>
+</section>
+
+<section id="services" class="wrap">
+  <div class="sec-head"><span class="eyebrow">Prestations</span><h2>Ce que l'on peut créer pour vous.</h2></div>
+  <div class="svc">
+    <div class="item"><div class="n">01</div><h3>Bouquets & abonnements</h3><p>Un bouquet livré chez vous chaque semaine ou chaque mois, toujours de saison.</p></div>
+    <div class="item"><div class="n">02</div><h3>Mariages & cérémonies</h3><p>De la première planche d'inspiration au dernier centre de table, on orchestre tout.</p></div>
+    <div class="item"><div class="n">03</div><h3>Événements & entreprises</h3><p>Décor floral pour vos ouvertures, dîners et réceptions.</p></div>
+    <div class="item"><div class="n">04</div><h3>Ateliers</h3><p>Apprenez à composer votre propre bouquet lors de nos sessions du samedi.</p></div>
+  </div>
+</section>
+
+<section class="wrap">
+  <div id="contact" class="contact">
+    <span class="eyebrow" style="color:var(--blush);">Commander</span>
+    <h2>Offrez quelque chose<br>qui ne fanera pas de sitôt.</h2>
+    <p>Passez à l'atelier, appelez-nous, ou écrivez — on vous répond dans la journée.</p>
+    <a href="mailto:bonjour@atelier-aurore.fr" class="btn">Nous écrire</a>
+  </div>
+</section>
+
+<footer><div class="wrap">Atelier Aurore — Périgueux · Template <b>Aurora</b> par <a href="../index.html">WilSam Studio</a></div></footer>
+
+<script>
+  const nav=document.getElementById('nav');
+  addEventListener('scroll',()=>nav.classList.toggle('scrolled',scrollY>40),{passive:true});
+  document.getElementById('hamb').addEventListener('click',()=>document.getElementById('links').classList.toggle('open'));
+  document.querySelectorAll('#links a').forEach(a=>a.addEventListener('click',()=>document.getElementById('links').classList.remove('open')));
+</script>
+</body>
+</html>

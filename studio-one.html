@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Studio One — Photographe</title>
+<meta name="description" content="Template Studio One par WilSam Studio — exemple : portfolio photographe. Galerie immersive, éditorial, minimal." />
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root{ --paper:#FAFAF8; --ink:#0F0F0F; --muted:#77746E; --gold:#B0894E; --line:rgba(15,15,15,.12); }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{background:var(--paper);color:var(--ink);font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden;}
+  ::selection{background:var(--ink);color:var(--paper);}
+  .disp{font-family:'Playfair Display',serif;}
+  .wrap{max-width:1240px;margin:0 auto;padding:0 28px;}
+  a{color:inherit;text-decoration:none;}
+  .eyebrow{font-size:.64rem;letter-spacing:.36em;text-transform:uppercase;color:var(--muted);}
+  .link-u{position:relative;font-size:.74rem;letter-spacing:.14em;text-transform:uppercase;}
+  .link-u::after{content:'';position:absolute;left:0;bottom:-4px;width:100%;height:1px;background:var(--ink);transform:scaleX(0);transform-origin:left;transition:transform .4s cubic-bezier(.19,1,.22,1);}
+  .link-u:hover::after{transform:scaleX(1);}
+  nav{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;align-items:center;justify-content:space-between;padding:22px 28px;mix-blend-mode:difference;color:#fff;}
+  nav .brand{font-family:'Playfair Display',serif;font-size:1.4rem;letter-spacing:.04em;}
+  nav .links{display:flex;gap:34px;align-items:center;}
+  nav .links a{color:#fff;}
+  nav .links .link-u::after{background:#fff;}
+  .hamb{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;}
+  .hamb span{width:24px;height:1.5px;background:#fff;}
+  /* hero */
+  .hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;position:relative;}
+  .hero .big{position:relative;z-index:2;padding-top:70px;}
+  .hero h1{font-family:'Playfair Display',serif;font-weight:400;font-size:clamp(3rem,13vw,12rem);line-height:.88;letter-spacing:-.02em;}
+  .hero h1 em{font-style:italic;}
+  .hero .meta{display:flex;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-top:40px;border-top:1px solid var(--line);padding-top:22px;}
+  .hero .meta p{color:var(--muted);font-size:.9rem;max-width:360px;line-height:1.7;}
+  .hero .meta .r{text-align:right;}
+  section{padding:120px 0;}
+  .sec-head{display:flex;align-items:baseline;justify-content:space-between;gap:20px;margin-bottom:48px;flex-wrap:wrap;}
+  .sec-head h2{font-family:'Playfair Display',serif;font-weight:400;font-size:clamp(2rem,5vw,3.6rem);}
+  /* gallery */
+  .gal{columns:3;column-gap:16px;}
+  .gal figure{break-inside:avoid;margin:0 0 16px;position:relative;overflow:hidden;background:#e9e7e2;}
+  .gal img{width:100%;display:block;filter:grayscale(.15);transition:transform .8s cubic-bezier(.19,1,.22,1),filter .5s;}
+  .gal figure:hover img{transform:scale(1.05);filter:none;}
+  .gal figcaption{position:absolute;left:14px;bottom:12px;color:#fff;font-size:.66rem;letter-spacing:.18em;text-transform:uppercase;opacity:0;transform:translateY(8px);transition:.4s;text-shadow:0 1px 6px rgba(0,0,0,.5);}
+  .gal figure:hover figcaption{opacity:1;transform:none;}
+  /* series */
+  .series{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;}
+  .serie{position:relative;aspect-ratio:3/2;overflow:hidden;background:#e9e7e2;}
+  .serie img{width:100%;height:100%;object-fit:cover;filter:grayscale(.2);transition:transform .8s,filter .5s;}
+  .serie:hover img{transform:scale(1.04);filter:none;}
+  .serie .cap{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;padding:26px;background:linear-gradient(to top,rgba(0,0,0,.55),transparent 55%);color:#fff;}
+  .serie .cap h3{font-family:'Playfair Display',serif;font-size:1.7rem;}
+  .serie .cap span{font-size:.64rem;letter-spacing:.2em;text-transform:uppercase;opacity:.85;}
+  /* about */
+  .about{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;}
+  .about .fig{aspect-ratio:4/5;overflow:hidden;background:#e9e7e2;}
+  .about .fig img{width:100%;height:100%;object-fit:cover;filter:grayscale(.3);}
+  .about p{color:var(--muted);line-height:1.9;font-size:1.05rem;margin-bottom:18px;}
+  .about .disp{font-family:'Playfair Display',serif;font-size:clamp(1.8rem,4vw,3rem);color:var(--ink);line-height:1.1;margin-bottom:24px;}
+  .contact{text-align:center;}
+  .contact h2{font-family:'Playfair Display',serif;font-weight:400;font-size:clamp(2.4rem,8vw,6rem);line-height:1;margin-bottom:22px;}
+  .contact a.mail{font-family:'Playfair Display',serif;font-style:italic;font-size:clamp(1.4rem,4vw,2.4rem);border-bottom:1px solid var(--ink);padding-bottom:4px;}
+  footer{padding:40px 0;border-top:1px solid var(--line);display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;color:var(--muted);font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;}
+  footer a{border-bottom:1px solid var(--muted);}
+  @media(max-width:860px){
+    .gal{columns:2;}.series{grid-template-columns:1fr;}.about{grid-template-columns:1fr;}.about .fig{order:-1;aspect-ratio:3/2;}
+    nav .links{display:none;}nav .links.open{display:flex;position:absolute;top:58px;right:16px;flex-direction:column;background:var(--ink);padding:20px 26px;gap:16px;mix-blend-mode:normal;}
+    .hamb{display:flex;}
+  }
+</style>
+</head>
+<body>
+<nav id="nav">
+  <a class="brand" href="#">Studio One</a>
+  <div class="links" id="links">
+    <a href="#travaux" class="link-u">Travaux</a>
+    <a href="#series" class="link-u">Séries</a>
+    <a href="#apropos" class="link-u">À propos</a>
+    <a href="#contact" class="link-u">Contact</a>
+  </div>
+  <button class="hamb" id="hamb" aria-label="Menu"><span></span><span></span><span></span></button>
+</nav>
+
+<header class="hero wrap">
+  <div class="big">
+    <span class="eyebrow">Photographe · Portraits & Éditorial</span>
+    <h1>Studio<br><em>One.</em></h1>
+    <div class="meta">
+      <p>Photographe basée à Périgueux. Je fais des images qui gardent quelque chose de vrai — portraits, mariages, éditorial de marque.</p>
+      <p class="r">Disponible pour commandes<br>2026 — Nouvelle-Aquitaine & au-delà</p>
+    </div>
+  </div>
+</header>
+
+<section id="travaux" class="wrap">
+  <div class="sec-head"><h2>Travaux récents</h2><span class="eyebrow">Sélection 2024–2026</span></div>
+  <div class="gal">
+    <figure><img src="../posters/video-1.jpg" alt="">    <figcaption>Éditorial — 01</figcaption></figure>
+    <figure><img src="../posters/video-3.jpg" alt="">    <figcaption>Portrait — 02</figcaption></figure>
+    <figure><img src="../posters/video-5.jpg" alt="">    <figcaption>Reportage — 03</figcaption></figure>
+    <figure><img src="../posters/video-2.jpg" alt="">    <figcaption>Studio — 04</figcaption></figure>
+    <figure><img src="../posters/video-4.jpg" alt="">    <figcaption>Extérieur — 05</figcaption></figure>
+    <figure><img src="../posters/video-1.jpg" alt="">    <figcaption>Lumière — 06</figcaption></figure>
+  </div>
+</section>
+
+<section id="series" class="wrap">
+  <div class="sec-head"><h2>Séries</h2><span class="eyebrow">Projets personnels</span></div>
+  <div class="series">
+    <div class="serie"><img src="../posters/video-2.jpg" alt=""><div class="cap"><span>2025 · Argentique</span><h3>Heures bleues</h3></div></div>
+    <div class="serie"><img src="../posters/video-5.jpg" alt=""><div class="cap"><span>2024 · Numérique</span><h3>Ceux qui restent</h3></div></div>
+  </div>
+</section>
+
+<section id="apropos" class="wrap">
+  <div class="about">
+    <div class="fig"><img src="../posters/video-3.jpg" alt="Portrait de la photographe"></div>
+    <div>
+      <span class="eyebrow">À propos</span>
+      <p class="disp">La photographie, pour moi, c'est apprendre à regarder plus lentement.</p>
+      <p>Formée à l'école de l'image, dix ans derrière l'objectif. Je travaille en lumière naturelle autant que possible, et je crois qu'une bonne photo commence par une vraie conversation.</p>
+      <p>Portraits, mariages, campagnes de marque — chaque projet est traité comme une histoire à part entière.</p>
+      <a href="#contact" class="link-u" style="display:inline-block;margin-top:8px;">Travaillons ensemble →</a>
+    </div>
+  </div>
+</section>
+
+<section id="contact" class="wrap contact">
+  <span class="eyebrow">Contact</span>
+  <h2>Racontons votre<br><em style="font-family:'Playfair Display',serif;font-style:italic;">histoire.</em></h2>
+  <a class="mail" href="mailto:bonjour@studio-one.fr">bonjour@studio-one.fr</a>
+</section>
+
+<footer class="wrap">
+  <span>Studio One — Périgueux</span>
+  <span>Template <b>Studio One</b> par <a href="../index.html">WilSam Studio</a></span>
+</footer>
+
+<script>
+  document.getElementById('hamb').addEventListener('click',()=>document.getElementById('links').classList.toggle('open'));
+  document.querySelectorAll('#links a').forEach(a=>a.addEventListener('click',()=>document.getElementById('links').classList.remove('open')));
+</script>
+</body>
+</html>

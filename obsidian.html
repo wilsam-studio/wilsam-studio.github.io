@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Obsidian — Coach sportif</title>
+<meta name="description" content="Template Obsidian par WilSam Studio — exemple : coaching sportif premium. Design sombre, puissant, orienté conversion." />
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{ --bg:#0A0A0B; --bg-2:#111113; --surf:#161618; --text:#F2F1EE; --muted:#8A8A86; --acc:#FF4D1C; --acc-2:#FF7A44; --line:rgba(255,255,255,.09); }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{background:var(--bg);color:var(--text);font-family:'Space Grotesk',sans-serif;overflow-x:hidden;-webkit-font-smoothing:antialiased;}
+  ::selection{background:var(--acc);color:#fff;}
+  .cond{font-family:'Oswald',sans-serif;}
+  .wrap{max-width:1200px;margin:0 auto;padding:0 24px;}
+  a{color:inherit;text-decoration:none;}
+  .eyebrow{font-family:'Space Grotesk';font-size:.66rem;letter-spacing:.34em;text-transform:uppercase;color:var(--acc);}
+  .btn{display:inline-flex;align-items:center;gap:10px;font-family:'Oswald';font-weight:600;font-size:.82rem;letter-spacing:.14em;text-transform:uppercase;padding:1rem 2rem;border-radius:4px;background:var(--acc);color:#fff;transition:transform .3s,box-shadow .3s,background .3s;}
+  .btn:hover{transform:translateY(-2px);box-shadow:0 14px 34px rgba(255,77,28,.35);background:var(--acc-2);}
+  .btn-out{background:transparent;border:1px solid var(--line);color:var(--text);}
+  .btn-out:hover{background:var(--surf);box-shadow:none;}
+  nav{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;align-items:center;justify-content:space-between;padding:18px 24px;transition:background .4s,backdrop-filter .4s;}
+  nav.scrolled{background:rgba(10,10,11,.8);backdrop-filter:blur(14px);border-bottom:1px solid var(--line);}
+  nav .brand{font-family:'Oswald';font-weight:700;font-size:1.3rem;letter-spacing:.1em;text-transform:uppercase;}
+  nav .brand b{color:var(--acc);}
+  nav .links{display:flex;gap:28px;align-items:center;}
+  nav .links a{font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);transition:color .3s;}
+  nav .links a:hover{color:var(--text);}
+  .hamb{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;}
+  .hamb span{width:24px;height:2px;background:var(--text);}
+  /* hero */
+  .hero{position:relative;min-height:100vh;display:flex;align-items:center;overflow:hidden;}
+  .hero-bg{position:absolute;inset:0;background:
+      radial-gradient(ellipse 60% 50% at 70% 30%, rgba(255,77,28,.20), transparent 60%),
+      linear-gradient(180deg,#0A0A0B, #141416);}
+  .hero-bg::after{content:'';position:absolute;inset:0;background-image:url('../posters/video-4.jpg');background-size:cover;background-position:center;opacity:.18;mix-blend-mode:luminosity;}
+  .hero-inner{position:relative;z-index:2;padding-top:80px;}
+  .hero h1{font-family:'Oswald';font-weight:700;font-size:clamp(3rem,11vw,9rem);line-height:.92;text-transform:uppercase;letter-spacing:-.01em;}
+  .hero h1 span{color:var(--acc);-webkit-text-stroke:1px var(--acc);color:transparent;}
+  .hero p{max-width:440px;color:var(--muted);font-size:1.05rem;line-height:1.7;margin:22px 0 34px;}
+  .hero .cta{display:flex;gap:14px;flex-wrap:wrap;}
+  .scroll-hint{position:absolute;bottom:26px;left:50%;transform:translateX(-50%);z-index:2;font-size:.6rem;letter-spacing:.3em;text-transform:uppercase;color:var(--muted);}
+  /* stats bar */
+  .stats{border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--bg-2);}
+  .stats .row{display:grid;grid-template-columns:repeat(4,1fr);}
+  .stats .cell{padding:34px 20px;text-align:center;border-right:1px solid var(--line);}
+  .stats .cell:last-child{border-right:none;}
+  .stats b{font-family:'Oswald';font-weight:700;font-size:2.6rem;display:block;line-height:1;color:var(--text);}
+  .stats span{font-size:.64rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);}
+  section{padding:120px 0;}
+  .sec-head{max-width:640px;margin-bottom:56px;}
+  .sec-head h2{font-family:'Oswald';font-weight:700;font-size:clamp(2.2rem,6vw,4.6rem);line-height:.98;text-transform:uppercase;margin-top:14px;}
+  /* programmes */
+  .progs{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+  .prog{background:var(--surf);border:1px solid var(--line);border-radius:8px;padding:34px;position:relative;overflow:hidden;transition:transform .4s,border-color .4s;}
+  .prog:hover{transform:translateY(-8px);border-color:rgba(255,77,28,.5);}
+  .prog .num{font-family:'Oswald';font-weight:700;font-size:3.4rem;color:rgba(255,255,255,.06);position:absolute;top:14px;right:20px;}
+  .prog h3{font-family:'Oswald';font-weight:600;font-size:1.5rem;text-transform:uppercase;margin-bottom:12px;}
+  .prog p{color:var(--muted);line-height:1.7;font-size:.94rem;}
+  .prog .tag{display:inline-block;margin-top:18px;font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;color:var(--acc);}
+  /* coach split */
+  .split{display:grid;grid-template-columns:1fr 1fr;gap:50px;align-items:center;}
+  .split .fig{aspect-ratio:4/5;border-radius:8px;background:linear-gradient(160deg,#1a1a1d,#0d0d0f);border:1px solid var(--line);display:flex;align-items:flex-end;justify-content:center;padding:20px;}
+  .split .fig span{color:var(--muted);font-size:.85rem;}
+  .split p{color:var(--muted);line-height:1.8;margin-bottom:16px;font-size:1rem;}
+  .split .sig{font-family:'Oswald';font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--text);margin-top:20px;}
+  /* pricing */
+  .pricing{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+  .plan{background:var(--surf);border:1px solid var(--line);border-radius:8px;padding:34px;display:flex;flex-direction:column;}
+  .plan.feat{border-color:var(--acc);box-shadow:0 0 0 1px var(--acc),0 30px 60px rgba(255,77,28,.14);}
+  .plan h3{font-family:'Oswald';font-weight:600;text-transform:uppercase;font-size:1.2rem;letter-spacing:.06em;}
+  .plan .amt{font-family:'Oswald';font-weight:700;font-size:3rem;margin:14px 0 4px;}
+  .plan .amt small{font-size:.9rem;color:var(--muted);font-weight:400;}
+  .plan ul{list-style:none;margin:20px 0 26px;flex:1;}
+  .plan li{color:var(--muted);font-size:.92rem;padding:9px 0;border-bottom:1px solid var(--line);}
+  .contact{text-align:center;background:linear-gradient(180deg,#141416,#0A0A0B);border-top:1px solid var(--line);}
+  .contact h2{font-family:'Oswald';font-weight:700;font-size:clamp(2.4rem,7vw,5.4rem);text-transform:uppercase;line-height:.98;margin-bottom:18px;}
+  .contact p{color:var(--muted);max-width:420px;margin:0 auto 32px;line-height:1.7;}
+  footer{padding:36px 0;text-align:center;color:var(--muted);font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;border-top:1px solid var(--line);}
+  footer a{color:var(--acc);}
+  @media(max-width:860px){
+    .stats .row{grid-template-columns:repeat(2,1fr);}.stats .cell:nth-child(2){border-right:none;}
+    .progs{grid-template-columns:1fr;}.split{grid-template-columns:1fr;}.split .fig{order:-1;aspect-ratio:16/10;}
+    .pricing{grid-template-columns:1fr;}
+    nav .links{display:none;}nav .links.open{display:flex;position:absolute;top:60px;right:16px;flex-direction:column;background:var(--surf);padding:20px 26px;border-radius:10px;border:1px solid var(--line);gap:16px;}
+    .hamb{display:flex;}
+  }
+</style>
+</head>
+<body>
+<nav id="nav">
+  <a class="brand" href="#">OBSIDIAN<b>.</b></a>
+  <div class="links" id="links">
+    <a href="#programmes">Programmes</a>
+    <a href="#coach">Le coach</a>
+    <a href="#tarifs">Tarifs</a>
+    <a href="#contact" class="btn" style="padding:.6rem 1.2rem;">Séance d'essai</a>
+  </div>
+  <button class="hamb" id="hamb" aria-label="Menu"><span></span><span></span><span></span></button>
+</nav>
+
+<header class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-inner wrap">
+    <span class="eyebrow">Coaching sportif · Périgueux</span>
+    <h1>Forge<br><span>ton corps.</span></h1>
+    <p>Coaching individuel et petits groupes. Un programme construit pour toi, un suivi qui ne te lâche pas. Résultats visibles en 8 semaines.</p>
+    <div class="cta">
+      <a href="#contact" class="btn">Réserver ma séance d'essai →</a>
+      <a href="#programmes" class="btn btn-out">Voir les programmes</a>
+    </div>
+  </div>
+  <span class="scroll-hint">Scroll</span>
+</header>
+
+<div class="stats">
+  <div class="wrap"><div class="row">
+    <div class="cell"><b>8 sem.</b><span>premiers résultats</span></div>
+    <div class="cell"><b>120+</b><span>clients suivis</span></div>
+    <div class="cell"><b>4.9/5</b><span>satisfaction</span></div>
+    <div class="cell"><b>1:1</b><span>suivi personnel</span></div>
+  </div></div>
+</div>
+
+<section id="programmes" class="wrap">
+  <div class="sec-head"><span class="eyebrow">Programmes</span><h2>Choisis ton terrain.</h2></div>
+  <div class="progs">
+    <div class="prog"><div class="num">01</div><h3>Prise de masse</h3><p>Hypertrophie, force, nutrition. Pour construire du muscle proprement, sans te blesser.</p><span class="tag">Débutant → Avancé</span></div>
+    <div class="prog"><div class="num">02</div><h3>Perte de poids</h3><p>Cardio intelligent, renfo et plan alimentaire durable. On vise le long terme, pas l'effet yoyo.</p><span class="tag">Tous niveaux</span></div>
+    <div class="prog"><div class="num">03</div><h3>Préparation physique</h3><p>Explosivité, mobilité, prévention. Pour les sportifs qui veulent passer un cap.</p><span class="tag">Intermédiaire+</span></div>
+  </div>
+</section>
+
+<section id="coach" class="wrap">
+  <div class="split">
+    <div class="fig"><span>Photo du coach ici</span></div>
+    <div>
+      <span class="eyebrow">Le coach</span>
+      <h2 class="cond" style="font-family:'Oswald';font-weight:700;font-size:clamp(2rem,5vw,3.6rem);text-transform:uppercase;line-height:1;margin:14px 0 22px;">Je ne vends pas<br>des séances. Un résultat.</h2>
+      <p>10 ans à accompagner des gens qui pensaient "ne pas être faits pour le sport". Diplômé d'État, spécialisé en préparation physique et rééquilibrage alimentaire.</p>
+      <p>Ma méthode : comprendre ta vie, tes contraintes, ton objectif réel — puis construire un plan que tu peux vraiment tenir.</p>
+      <div class="sig">— Coach, fondateur d'Obsidian</div>
+    </div>
+  </div>
+</section>
+
+<section id="tarifs" class="wrap">
+  <div class="sec-head"><span class="eyebrow">Tarifs</span><h2>Simple. Sans engagement piégé.</h2></div>
+  <div class="pricing">
+    <div class="plan"><h3>Découverte</h3><div class="amt">45€<small>/séance</small></div><ul><li>Séance individuelle</li><li>Bilan de forme inclus</li><li>Sans engagement</li></ul><a href="#contact" class="btn btn-out">Réserver</a></div>
+    <div class="plan feat"><h3>Suivi mensuel</h3><div class="amt">240€<small>/mois</small></div><ul><li>8 séances / mois</li><li>Plan nutrition</li><li>Suivi WhatsApp illimité</li><li>Accès appli de suivi</li></ul><a href="#contact" class="btn">Commencer</a></div>
+    <div class="plan"><h3>Duo</h3><div class="amt">65€<small>/séance</small></div><ul><li>À deux, tarif partagé</li><li>Motivation x2</li><li>Programme commun</li></ul><a href="#contact" class="btn btn-out">Réserver</a></div>
+  </div>
+</section>
+
+<section class="contact">
+  <div class="wrap">
+    <span class="eyebrow">On commence quand ?</span>
+    <h2>La première séance<br>est offerte.</h2>
+    <p>Une heure pour faire ton bilan et voir si le courant passe. Zéro pression, zéro engagement.</p>
+    <a href="mailto:contact@obsidian-coaching.fr" class="btn">Réserver ma séance d'essai →</a>
+  </div>
+</section>
+
+<footer><div class="wrap">OBSIDIAN Coaching — Périgueux · Template <b>Obsidian</b> par <a href="../index.html">WilSam Studio</a></div></footer>
+
+<script>
+  const nav=document.getElementById('nav');
+  addEventListener('scroll',()=>nav.classList.toggle('scrolled',scrollY>40),{passive:true});
+  document.getElementById('hamb').addEventListener('click',()=>document.getElementById('links').classList.toggle('open'));
+  document.querySelectorAll('#links a').forEach(a=>a.addEventListener('click',()=>document.getElementById('links').classList.remove('open')));
+</script>
+</body>
+</html>
