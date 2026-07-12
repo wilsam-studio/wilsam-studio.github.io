@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>WilSam Studio — Expérience Numérique</title>
+<meta name="description" content="WilSam Studio — Agence de création de sites web à Périgueux. Accompagnement personnalisé, design sur mesure." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,400&family=Jost:wght@300;400;500&family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=Oswald:wght@300;400;600;700&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;1,9..144,400&family=Space+Grotesk:wght@400;500&display=swap" rel="stylesheet" />
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  :root{
+    --noir:#050505; --noir-2:#0B0A08; --noir-3:#12100C; --carbone:#0F0D0A;
+    --blanc:#F8F5EF; --blanc-2:#EFE7D9; --creme:#FFFDF8; --paper:#FBFAF7;
+    --ink:#141210; --ink-soft:rgba(20,18,16,.66); --ink-mist:rgba(20,18,16,.5);
+    --ambre:#FFB347; --ambre-deep:#8A5A12; --ambre-glow:rgba(255,179,71,.5); --ambre-dim:rgba(255,179,71,.14);
+    --l-line:rgba(245,240,232,.10); --d-line:rgba(20,18,16,.14);
+    --l-mist:rgba(245,240,232,.62); --d-mist:rgba(20,18,16,.58);
+    --ease-silk:cubic-bezier(.19,1,.22,1);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  ::selection{background:var(--ambre);color:var(--noir);}
+  body{background:var(--noir);color:var(--blanc);font-family:'Jost',sans-serif;font-weight:300;-webkit-font-smoothing:antialiased;overflow-x:hidden;}
+  ::-webkit-scrollbar{width:4px;} ::-webkit-scrollbar-track{background:var(--noir);} ::-webkit-scrollbar-thumb{background:var(--ambre);border-radius:2px;}
+
+  /* Fine + spaced type system (remplace Anton/Space Mono) */
+  .font-anton{font-family:'Cormorant Garamond',serif;font-weight:300;letter-spacing:.02em;}
+  .font-cormorant{font-family:'Cormorant Garamond',serif;font-weight:400;}
+  .font-space{font-family:'Jost',sans-serif;font-weight:300;}
+
+  .reveal{opacity:0;transform:translateY(30px);transition:opacity 1s var(--ease-silk),transform 1s var(--ease-silk);}
+  .reveal.visible{opacity:1;transform:none;}
+
+  /* Buttons */
+  .btn-white{display:inline-block;background:var(--blanc);color:var(--noir);font-family:'Jost';font-weight:400;font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;padding:1.05rem 2.4rem;border:none;border-radius:2px;cursor:pointer;transition:transform .4s var(--ease-silk),background .3s,box-shadow .3s;}
+  .btn-white:hover{transform:translateY(-2px);box-shadow:0 18px 40px rgba(0,0,0,.35);background:#fff;}
+  .btn-line{display:inline-block;background:transparent;color:var(--blanc);border:1px solid rgba(245,240,232,.4);font-family:'Jost';font-weight:400;font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;padding:1.05rem 2.4rem;border-radius:2px;cursor:pointer;transition:background .3s,color .3s;}
+  .btn-line:hover{background:var(--blanc);color:var(--noir);}
+  .btn-dark{display:inline-block;background:var(--ink);color:var(--blanc);font-family:'Jost';font-weight:400;font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;padding:1.05rem 2.4rem;border:none;border-radius:2px;cursor:pointer;transition:transform .4s var(--ease-silk),background .3s;}
+  .btn-dark:hover{transform:translateY(-2px);background:#000;}
+
+  /* HERO video */
+  .hero-video-layer{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity 1.1s var(--ease-silk);}
+  .hero-video-layer.active{opacity:1;}
+  .hero-overlay{position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,rgba(5,5,5,.68) 0%,rgba(5,5,5,.34) 34%,rgba(5,5,5,.5) 70%,rgba(5,5,5,.96) 100%);}
+
+  /* Template COVER (mini hero mockup) */
+  .cover{position:relative;width:100%;height:100%;display:flex;flex-direction:column;overflow:hidden;}
+  .cover-bar{display:flex;align-items:center;gap:8px;padding:9px 12px;font-size:6.5px;letter-spacing:.16em;text-transform:uppercase;opacity:.85;}
+  .cover-bar .dots{display:flex;gap:3px;} .cover-bar .dots i{width:4px;height:4px;border-radius:1px;background:currentColor;opacity:.45;}
+  .cover-bar .m{margin-left:auto;display:flex;gap:9px;opacity:.8;}
+  .cover-body{flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:4px 16px 18px;}
+  .cover-title{line-height:.92;font-size:clamp(1.15rem,3.4vw,1.75rem);}
+  .cover-tag{font-family:'Jost';font-weight:300;font-size:8.5px;letter-spacing:.14em;margin-top:7px;opacity:.8;}
+  .cover-cta{font-family:'Jost';font-weight:400;font-size:7px;letter-spacing:.18em;text-transform:uppercase;margin-top:12px;padding:6px 13px;border-radius:100px;}
+
+  /* HERO carousel */
+  .hcar-mask{-webkit-mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent);mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent);}
+  .hcar-card{flex:0 0 auto;width:250px;height:168px;border-radius:14px;overflow:hidden;cursor:pointer;position:relative;box-shadow:0 20px 44px rgba(0,0,0,.5);transition:transform .5s var(--ease-silk),box-shadow .5s,opacity .5s;opacity:.6;}
+  .hcar-card.is-active{opacity:1;transform:translateY(-12px) scale(1.05);box-shadow:0 30px 64px rgba(0,0,0,.6),0 0 46px rgba(255,179,71,.16);}
+  .hcar-card:hover{opacity:1;}
+
+  /* LAMP */
+  #lampe{position:relative;min-height:92vh;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;background:radial-gradient(ellipse 60% 80% at 50% 0%,#12100C,var(--noir) 70%);}
+  .lamp-stage{position:relative;width:100%;max-width:520px;height:min(46vh,400px);}
+  /* Cord: grows down from the top of the stage */
+  .lamp-cord{position:absolute;top:0;left:50%;width:1px;height:0;background:linear-gradient(180deg,rgba(245,240,232,.4),rgba(245,240,232,.12));transform:translateX(-50%);transition:height 1.1s var(--ease-silk);z-index:2;}
+  #lampe.on .lamp-cord{height:36%;}
+  /* Fixture (lamp head): its TOP edge lands exactly at the cord's end (36%).
+     Glow + cone are children, so they always stay anchored to the head. */
+  .lamp-fixture{position:absolute;top:0;left:50%;width:86px;height:120px;transform:translate(-50%,-40px);opacity:0;transition:opacity 1s var(--ease-silk) .2s, top 1.2s var(--ease-silk) .2s, transform 1.2s var(--ease-silk) .2s;z-index:3;}
+  #lampe.on .lamp-fixture{opacity:1;top:36%;transform:translate(-50%,-2px);}
+  .lamp-fixture svg{position:relative;z-index:4;}
+  /* Bulb halo — centred on the bulb (~y58 of the 120-tall svg) */
+  .lamp-bulb-glow{position:absolute;left:43px;top:58px;width:min(70vw,440px);height:min(70vw,440px);transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle,rgba(255,179,71,.42),rgba(255,179,71,.08) 42%,transparent 68%);opacity:0;transition:opacity 1.4s var(--ease-silk) .5s;pointer-events:none;filter:blur(4px);z-index:1;}
+  #lampe.on .lamp-bulb-glow{opacity:1;}
+  /* Light cone — starts at the bottom rim of the shade (~y48) */
+  .lamp-cone{position:absolute;left:43px;top:46px;width:min(86vw,600px);height:60vh;transform:translateX(-50%) scaleY(0);transform-origin:top center;background:linear-gradient(180deg,rgba(255,179,71,.18),rgba(255,179,71,.04) 55%,transparent 88%);clip-path:polygon(43% 0,57% 0,100% 100%,0 100%);opacity:0;transition:transform 1.3s var(--ease-silk) .45s,opacity 1.1s var(--ease-silk) .45s;pointer-events:none;z-index:0;}
+  #lampe.on .lamp-cone{transform:translateX(-50%) scaleY(1);opacity:1;}
+  .lamp-slogan{position:relative;z-index:5;margin-top:min(6vh,48px);text-align:center;opacity:0;transform:translateY(26px);transition:opacity 1.1s var(--ease-silk) .9s,transform 1.1s var(--ease-silk) .9s;}
+  #lampe.on .lamp-slogan{opacity:1;transform:none;}
+
+  @keyframes amberPulse{0%,100%{box-shadow:0 0 0 0 rgba(255,179,71,.4);}50%{box-shadow:0 0 20px 4px rgba(255,179,71,.2);}}
+  @keyframes timelinePulse{0%{top:0;opacity:0;}50%{opacity:1;}100%{top:100%;opacity:0;}}
+  @keyframes fadeDown{from{opacity:0;transform:translateY(-10px);}to{opacity:1;transform:translateY(0);}}
+  @keyframes slideIn{from{opacity:0;transform:translateX(40px);}to{opacity:1;transform:translateX(0);}}
+
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{animation:none !important;transition:none !important;}
+    .reveal{opacity:1;transform:none;} .hero-video-layer.active{opacity:1;}
+    #lampe .lamp-cord{height:36%;} #lampe .lamp-fixture{opacity:1;top:36%;transform:translate(-50%,-2px);} #lampe .lamp-slogan{opacity:1;transform:none;}
+    #lampe .lamp-bulb-glow,#lampe .lamp-cone{opacity:1;} #lampe .lamp-cone{transform:translateX(-50%) scaleY(1);}
+  }
+</style>
+</head>
+<body>
+
+<div class="fixed top-0 left-0 right-0 h-[2px] z-[500]"><div id="wizard-progress" class="h-full bg-[var(--ambre)] shadow-[0_0_10px_var(--ambre-glow)] transition-all duration-500" style="width:0%;transition-timing-function:var(--ease-silk);"></div></div>
+
+<!-- NAVBAR -->
+<nav id="navbar" class="fixed top-0 left-0 right-0 z-[300] flex justify-between items-center px-6 md:px-12 py-5 transition-all duration-500 bg-transparent">
+  <a href="#hero" data-scrolltop class="font-cormorant text-[var(--blanc)] text-xl tracking-[.16em] font-light no-underline">WilSam</a>
+  <div class="hidden md:flex items-center gap-9">
+    <button data-megamenu="0" class="megabtn bg-transparent border-none text-[var(--blanc)] font-space text-[.68rem] tracking-[.26em] uppercase cursor-pointer relative transition-opacity duration-300 opacity-60 hover:opacity-100">Pourquoi nous ?<span class="megabar absolute left-0 bottom-[-6px] w-full h-[1px] bg-[var(--blanc)] transition-transform duration-500 origin-left scale-x-0" style="transition-timing-function:var(--ease-silk);"></span></button>
+    <button data-megamenu="1" class="megabtn bg-transparent border-none text-[var(--blanc)] font-space text-[.68rem] tracking-[.26em] uppercase cursor-pointer relative transition-opacity duration-300 opacity-60 hover:opacity-100">Produits<span class="megabar absolute left-0 bottom-[-6px] w-full h-[1px] bg-[var(--blanc)] transition-transform duration-500 origin-left scale-x-0" style="transition-timing-function:var(--ease-silk);"></span></button>
+    <button data-scrollto="tarifs" class="bg-transparent border-none text-[var(--blanc)] font-space text-[.68rem] tracking-[.26em] uppercase cursor-pointer opacity-60 hover:opacity-100 transition-opacity duration-300">Tarifs</button>
+    <button data-scrollto="contact" class="bg-transparent border-none text-[var(--blanc)] font-space text-[.68rem] tracking-[.26em] uppercase cursor-pointer opacity-60 hover:opacity-100 transition-opacity duration-300">Contact</button>
+  </div>
+  <button id="hamburger" class="md:hidden flex flex-col justify-center gap-[5px] p-2 bg-transparent border-none cursor-pointer z-[400]" aria-label="Menu">
+    <span class="ham-l w-[22px] h-[1.5px] bg-[var(--blanc)] block transition-transform duration-300"></span>
+    <span class="ham-m w-[22px] h-[1.5px] bg-[var(--blanc)] block transition-all duration-300"></span>
+    <span class="ham-r w-[22px] h-[1.5px] bg-[var(--blanc)] block transition-transform duration-300"></span>
+  </button>
+  <div id="megapanel" class="hidden md:hidden absolute top-full left-0 right-0 bg-[#050505]/92 backdrop-blur-2xl border-t border-[rgba(255,179,71,.1)]" style="animation:fadeDown .3s var(--ease-silk) forwards;">
+    <div class="max-w-[1200px] mx-auto px-12 py-10">
+      <div data-panel="0" class="grid gap-6 grid-cols-2">
+        <button data-scrollto="apropos" class="text-left p-6 rounded-2xl border border-[var(--l-line)] hover:border-[rgba(255,179,71,.3)] hover:bg-[rgba(255,179,71,.03)] transition-all duration-300 cursor-pointer bg-transparent"><h4 class="font-anton text-[var(--blanc)] text-2xl tracking-wide uppercase mb-2">Notre histoire</h4><p class="font-cormorant text-[var(--l-mist)] text-base">Qui nous sommes, notre méthode</p></button>
+        <button data-scrollto="design-landing" class="text-left p-6 rounded-2xl border border-[var(--l-line)] hover:border-[rgba(255,179,71,.3)] hover:bg-[rgba(255,179,71,.03)] transition-all duration-300 cursor-pointer bg-transparent"><h4 class="font-anton text-[var(--blanc)] text-2xl tracking-wide uppercase mb-2">L'art de convertir</h4><p class="font-cormorant text-[var(--l-mist)] text-base">Notre approche du design</p></button>
+      </div>
+      <div data-panel="1" class="hidden grid gap-6 grid-cols-4">
+        <button data-scrollto="blog-vitrine" class="text-left p-6 rounded-2xl border border-[var(--l-line)] hover:border-[rgba(255,179,71,.3)] hover:bg-[rgba(255,179,71,.03)] transition-all duration-300 cursor-pointer bg-transparent"><h4 class="font-anton text-[var(--blanc)] text-xl tracking-wide uppercase mb-2">Sites vitrines</h4><p class="font-cormorant text-[var(--l-mist)] text-sm">Votre présence en ligne</p></button>
+        <button data-scrollto="design-landing" class="text-left p-6 rounded-2xl border border-[var(--l-line)] hover:border-[rgba(255,179,71,.3)] hover:bg-[rgba(255,179,71,.03)] transition-all duration-300 cursor-pointer bg-transparent"><h4 class="font-anton text-[var(--blanc)] text-xl tracking-wide uppercase mb-2">Landing pages</h4><p class="font-cormorant text-[var(--l-mist)] text-sm">Conversion & performance</p></button>
+        <button data-scrollto="templates" class="text-left p-6 rounded-2xl border border-[var(--l-line)] hover:border-[rgba(255,179,71,.3)] hover:bg-[rgba(255,179,71,.03)] transition-all duration-300 cursor-pointer bg-transparent"><h4 class="font-anton text-[var(--blanc)] text-xl tracking-wide uppercase mb-2">Templates métiers</h4><p class="font-cormorant text-[var(--l-mist)] text-sm">Notre galerie</p></button>
+        <button data-scrollto="commencons" class="text-left p-6 rounded-2xl border border-[var(--ambre)] col-span-full bg-[rgba(255,179,71,.05)] hover:bg-[rgba(255,179,71,.1)] transition-all duration-300 cursor-pointer"><h4 class="font-anton text-[var(--blanc)] text-2xl tracking-wide uppercase mb-2">Commençons maintenant</h4><p class="font-cormorant text-[var(--l-mist)] text-base">Démarrez votre projet</p><span class="inline-block mt-4 font-space text-[.72rem] font-medium tracking-[.16em] uppercase text-[var(--ambre)]">Commencer →</span></button>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- MOBILE MENU -->
+<div id="mobilemenu" class="hidden md:hidden fixed inset-0 z-[350] bg-[var(--noir)] flex-col items-center justify-center gap-6" style="animation:fadeDown .3s var(--ease-silk) forwards;">
+  <div class="w-[80%] max-w-[400px]">
+    <button data-mobacc="0" class="w-full text-center bg-transparent border-none font-anton text-3xl tracking-[.06em] uppercase text-[var(--blanc)] cursor-pointer py-2">Pourquoi nous ?</button>
+    <div data-mobsub="0" class="hidden mt-2 space-y-2">
+      <button data-scrollto="apropos" class="w-full text-center bg-transparent border border-[var(--l-line)] rounded-lg p-3 cursor-pointer"><span class="font-space text-[.7rem] tracking-[.14em] uppercase text-[var(--l-mist)]">Notre histoire</span></button>
+      <button data-scrollto="design-landing" class="w-full text-center bg-transparent border border-[var(--l-line)] rounded-lg p-3 cursor-pointer"><span class="font-space text-[.7rem] tracking-[.14em] uppercase text-[var(--l-mist)]">L'art de convertir</span></button>
+    </div>
+  </div>
+  <div class="w-[80%] max-w-[400px]">
+    <button data-mobacc="1" class="w-full text-center bg-transparent border-none font-anton text-3xl tracking-[.06em] uppercase text-[var(--blanc)] cursor-pointer py-2">Produits</button>
+    <div data-mobsub="1" class="hidden mt-2 space-y-2">
+      <button data-scrollto="blog-vitrine" class="w-full text-center bg-transparent border border-[var(--l-line)] rounded-lg p-3 cursor-pointer"><span class="font-space text-[.7rem] tracking-[.14em] uppercase text-[var(--l-mist)]">Sites vitrines</span></button>
+      <button data-scrollto="templates" class="w-full text-center bg-transparent border border-[var(--l-line)] rounded-lg p-3 cursor-pointer"><span class="font-space text-[.7rem] tracking-[.14em] uppercase text-[var(--l-mist)]">Templates métiers</span></button>
+      <button data-scrollto="commencons" class="w-full text-center bg-transparent border border-[var(--l-line)] rounded-lg p-3 cursor-pointer"><span class="font-space text-[.7rem] tracking-[.14em] uppercase text-[var(--l-mist)]">Commençons</span></button>
+    </div>
+  </div>
+  <button data-scrollto="tarifs" class="font-anton text-3xl tracking-[.06em] uppercase text-[var(--blanc)] opacity-60 bg-transparent border-none cursor-pointer">Tarifs</button>
+  <button data-scrollto="contact" class="font-anton text-3xl tracking-[.06em] uppercase text-[var(--blanc)] opacity-60 bg-transparent border-none cursor-pointer">Contact</button>
+  <span class="absolute bottom-6 font-space text-[.62rem] tracking-[.22em] uppercase text-[var(--l-mist)]">WilSam Studio — Périgueux</span>
+</div>
+
+<div class="relative">
+
+  <!-- HERO (Squarespace-style) -->
+  <section id="hero" class="min-h-screen flex flex-col items-center justify-center relative overflow-hidden bg-[var(--noir)] px-4">
+    <div id="hero-video-wrap" class="absolute inset-0"></div>
+    <div class="hero-overlay"></div>
+    <div class="relative z-10 flex flex-col items-center text-center max-w-[1000px] mt-[-8vh]">
+      <p class="font-space text-[.62rem] tracking-[.4em] uppercase text-[rgba(245,240,232,.75)] mb-8">Agence de création web · Périgueux</p>
+      <h1 class="font-anton font-light text-[clamp(3rem,10vw,9rem)] tracking-[.02em] leading-[.98] text-[var(--blanc)] uppercase">WILSAM<span class="inline-block mx-[.12em] text-[.55em] -translate-y-[.18em] text-[var(--ambre)]">·</span>STUDIO</h1>
+      <p class="font-cormorant italic text-[clamp(1.3rem,2.8vw,2rem)] text-[rgba(245,240,232,.9)] mt-4 max-w-[680px]">On crée le site qui révèle votre métier.</p>
+      <div class="flex flex-col items-center gap-5 mt-10">
+        <button data-scrollto="commencons" class="btn-white">Démarrer mon projet</button>
+        <p class="font-space text-[.62rem] tracking-[.24em] uppercase text-[rgba(245,240,232,.55)]">Devis gratuit · Livraison en 7 jours</p>
+      </div>
+    </div>
+    <div class="absolute left-0 right-0 bottom-[-58px] md:bottom-[-70px] z-10">
+      <p class="text-center font-space text-[.56rem] tracking-[.3em] uppercase text-[rgba(245,240,232,.5)] mb-4">Un métier, une ambiance — survolez</p>
+      <div id="hcar-viewport" class="hcar-mask overflow-hidden w-full"><div id="hcar-track" class="flex gap-5 px-6 will-change-transform"></div></div>
+    </div>
+  </section>
+
+  <!-- LAMP -->
+  <section id="lampe">
+    <div class="lamp-stage">
+      <div class="lamp-cord"></div>
+      <div class="lamp-fixture">
+        <div class="lamp-cone"></div>
+        <div class="lamp-bulb-glow"></div>
+        <svg width="86" height="120" viewBox="0 0 86 120" fill="none" aria-hidden="true">
+          <path d="M12 40 L74 40 L60 6 L26 6 Z" fill="#0F0D0A" stroke="rgba(245,240,232,.5)" stroke-width="1.2"/>
+          <path d="M12 40 L74 40 L70 48 L16 48 Z" fill="#1a1610" stroke="rgba(245,240,232,.35)" stroke-width="1"/>
+          <circle cx="43" cy="58" r="8" fill="var(--ambre)" opacity=".9"/><circle cx="43" cy="58" r="4" fill="#FFF3DD"/>
+        </svg>
+      </div>
+    </div>
+    <div class="lamp-slogan px-4">
+      <p class="font-space text-[.6rem] tracking-[.3em] uppercase text-[var(--l-mist)] mb-5">Notre raison d'être</p>
+      <h2 class="font-anton font-light text-[clamp(2.8rem,8vw,6.6rem)] leading-[1] tracking-[.02em] uppercase text-[var(--blanc)]">Mettez en lumière<br /><span class="text-[var(--ambre)]">votre travail</span></h2>
+      <p class="font-cormorant text-lg md:text-xl text-[rgba(245,240,232,.72)] mt-6 max-w-[560px] mx-auto">Chaque projet mérite d'être vu. Notre métier, c'est de braquer le projecteur sur le vôtre.</p>
+    </div>
+  </section>
+
+  <!-- ABOUT (blanc) -->
+  <section id="apropos" class="bg-[var(--paper)] text-[var(--ink)] py-24 md:py-36 px-4 md:px-12">
+    <div class="max-w-[1200px] mx-auto">
+      <div class="reveal">
+        <p class="font-space text-[.62rem] tracking-[.3em] uppercase text-[var(--d-mist)] mb-4 flex items-center gap-3"><span class="w-[22px] h-[1px] bg-current"></span>À propos</p>
+        <h2 class="font-anton font-light text-[clamp(3rem,7.5vw,7.4rem)] leading-[1.02] tracking-[.02em] uppercase mb-8">Notre histoire.</h2>
+      </div>
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 mt-8">
+        <div>
+          <p class="font-cormorant text-xl leading-relaxed text-[var(--ink-soft)] mb-4">On est <strong class="text-[var(--ink)] font-medium underline decoration-[var(--ambre)] underline-offset-4">William</strong> et <strong class="text-[var(--ink)] font-medium underline decoration-[var(--ambre)] underline-offset-4">Samuel</strong>, deux lycéens en Terminale à Périgueux.</p>
+          <p class="font-cormorant text-xl leading-relaxed text-[var(--ink-soft)] mb-4">On a appris à coder par curiosité, et on s'est rendu compte qu'on pouvait vraiment aider des entreprises à exister en ligne.</p>
+          <p class="font-cormorant text-xl leading-relaxed text-[var(--ink-soft)] mb-4">Notre vision : <strong class="text-[var(--ink)] font-medium">donner de la visibilité</strong> aux restaurateurs, petits commerces et artisans qui méritent d'être trouvés.</p>
+          <p class="font-cormorant text-xl leading-relaxed text-[var(--ink-soft)]">Notre méthode : écouter, comprendre, créer — puis livrer en <strong class="text-[var(--ambre-deep)]">7 jours</strong>.</p>
+        </div>
+        <div class="relative pl-8">
+          <div class="absolute left-0 top-0 bottom-0 w-[1px] bg-[var(--ambre)]"><div class="absolute w-[1px] h-[30%] bg-[var(--ambre)] shadow-[0_0_12px_var(--ambre-glow)]" style="animation:timelinePulse 4s ease-in-out infinite;"></div></div>
+          <div class="reveal mb-10 relative" style="transition-delay:0ms;"><div class="absolute left-[-8px] top-[6px] w-[9px] h-[9px] rounded-full bg-[var(--ambre)] shadow-[0_0_12px_var(--ambre-glow)]" style="margin-left:-25px;"></div><span class="font-space text-[.6rem] tracking-[.24em] uppercase text-[var(--ambre-deep)] block mb-1">2024</span><h4 class="font-anton text-2xl tracking-[.03em] uppercase text-[var(--ink)] mb-1">La genèse</h4><p class="font-cormorant text-base text-[var(--ink-soft)]">William et Samuel commencent à coder par curiosité.</p></div>
+          <div class="reveal mb-10 relative" style="transition-delay:150ms;"><div class="absolute left-[-8px] top-[6px] w-[9px] h-[9px] rounded-full bg-[var(--ambre)] shadow-[0_0_12px_var(--ambre-glow)]" style="margin-left:-25px;"></div><span class="font-space text-[.6rem] tracking-[.24em] uppercase text-[var(--ambre-deep)] block mb-1">2024</span><h4 class="font-anton text-2xl tracking-[.03em] uppercase text-[var(--ink)] mb-1">Premier client</h4><p class="font-cormorant text-base text-[var(--ink-soft)]">Le premier site livré — une révélation.</p></div>
+          <div class="reveal mb-10 relative" style="transition-delay:300ms;"><div class="absolute left-[-8px] top-[6px] w-[9px] h-[9px] rounded-full bg-[var(--ambre)] shadow-[0_0_12px_var(--ambre-glow)]" style="margin-left:-25px;"></div><span class="font-space text-[.6rem] tracking-[.24em] uppercase text-[var(--ambre-deep)] block mb-1">2025</span><h4 class="font-anton text-2xl tracking-[.03em] uppercase text-[var(--ink)] mb-1">WilSam Studio</h4><p class="font-cormorant text-base text-[var(--ink-soft)]">L'agence naît officiellement à Périgueux.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BLOG VITRINE (blanc) -->
+  <section id="blog-vitrine" class="bg-[var(--blanc-2)] text-[var(--ink)] py-24 md:py-36 px-4 md:px-12">
+    <div class="max-w-[1200px] mx-auto">
+      <div class="reveal">
+        <p class="font-space text-[.62rem] tracking-[.3em] uppercase text-[var(--d-mist)] mb-4 flex items-center gap-3"><span class="w-[22px] h-[1px] bg-current"></span>Blog & Site vitrine</p>
+        <h2 class="font-anton font-light text-[clamp(2.8rem,7.5vw,5.4rem)] leading-[1.02] tracking-[.02em] uppercase mb-6">Pourquoi créer<br />un site vitrine ?</h2>
+        <p class="font-cormorant text-xl text-[var(--ink-soft)] max-w-[600px] mb-12">Un site vitrine est votre carte de visite numérique. Il présente votre activité, vos services et vos coordonnées — accessible partout, tout le temps.</p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-[1px] bg-[var(--d-line)]" id="advantages"></div>
+      <div class="mt-16 text-center"><button data-scrollto="commencons" class="btn-dark">Créer mon site vitrine</button></div>
+    </div>
+  </section>
+
+  <!-- DESIGN LANDING (blanc) -->
+  <section id="design-landing" class="bg-[var(--paper)] text-[var(--ink)] py-24 md:py-36 px-4 md:px-12">
+    <div class="max-w-[1200px] mx-auto">
+      <div class="reveal">
+        <p class="font-space text-[.62rem] tracking-[.3em] uppercase text-[var(--d-mist)] mb-4 flex items-center gap-3"><span class="w-[22px] h-[1px] bg-current"></span>Design créatif & Landing Page</p>
+        <h2 class="font-anton font-light text-[clamp(2.8rem,7.5vw,5.4rem)] leading-[1.02] tracking-[.02em] uppercase mb-6">L'art de<br />convertir.</h2>
+        <p class="font-cormorant text-xl text-[var(--ink-soft)] max-w-[600px] mb-12">Une landing page n'est pas un simple site — c'est une machine à convertir. Design accrocheur, structure orientée action, performance mesurable.</p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="features"></div>
+      <div class="mt-16 text-center"><button data-scrollto="commencons" class="btn-dark">Créer ma landing page</button></div>
+    </div>
+  </section>
+
+  <!-- TEMPLATES (blanc, covers) -->
+  <section id="templates" class="bg-[var(--blanc-2)] text-[var(--ink)] py-24 md:py-36 px-4 md:px-12">
+    <div class="max-w-[1400px] mx-auto">
+      <div class="reveal">
+        <p class="font-space text-[.62rem] tracking-[.3em] uppercase text-[var(--d-mist)] mb-4 flex items-center gap-3"><span class="w-[22px] h-[1px] bg-current"></span>Templates</p>
+        <h2 class="font-anton font-light text-[clamp(2.8rem,7.5vw,5.4rem)] leading-[1.02] tracking-[.02em] uppercase mb-6">Nos templates<br />premium.</h2>
+        <p class="font-cormorant text-xl text-[var(--ink-soft)] max-w-[600px] mb-12">Chaque template est une couverture de site, pensée pour un métier — prête à devenir votre site.</p>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" id="templates-grid"></div>
+    </div>
+  </section>
+
+  <!-- PRICING (blanc) -->
+  <section id="tarifs" class="bg-[var(--paper)] text-[var(--ink)] py-24 md:py-36 px-4 md:px-12">
+    <div class="max-w-[1200px] mx-auto">
+      <div class="reveal">
+        <p class="font-space text-[.62rem] tracking-[.3em] uppercase text-[var(--d-mist)] mb-4 flex items-center gap-3"><span class="w-[22px] h-[1px] bg-current"></span>Tarifs</p>
+        <h2 class="font-anton font-light text-[clamp(2.8rem,7.5vw,5.4rem)] leading-[1.02] tracking-[.02em] uppercase text-[var(--ink)] mb-8">Nos offres.</h2>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6" id="pricing-grid"></div>
+    </div>
+  </section>
+
+  <!-- WIZARD (sombre) -->
+  <section id="commencons" class="bg-[var(--noir)] text-[var(--blanc)] py-24 md:py-36 px-4 md:px-12 relative overflow-hidden">
+    <div class="max-w-[1200px] mx-auto">
+      <div class="reveal mb-12 text-center"><p class="font-space text-[.62rem] tracking-[.3em] uppercase text-[var(--l-mist)] mb-4">Étape <span id="wiz-step">1</span> / 4</p></div>
+      <div data-step="1" class="wiz-step max-w-[600px] mx-auto text-center">
+        <h3 class="font-anton text-[clamp(2rem,4vw,3.4rem)] uppercase text-[var(--blanc)] mb-6">Quel sera le sujet de votre site ?</h3>
+        <input id="wiz-subject" type="text" placeholder="Exemple : Restaurant, Cabinet d'avocats, Portfolio..." class="w-full bg-[rgba(245,240,232,.05)] border border-[rgba(245,240,232,.15)] text-[var(--blanc)] p-4 font-space text-sm rounded-xl outline-none focus:border-[var(--ambre)] transition-colors duration-300 placeholder:text-[rgba(245,240,232,.3)]" />
+        <button id="wiz-next1" class="btn-white mt-8 disabled:opacity-30 disabled:pointer-events-none" disabled>Continuer</button>
+      </div>
+      <div data-step="2" class="wiz-step hidden max-w-[600px] mx-auto text-center">
+        <h3 class="font-anton text-[clamp(2rem,4vw,3.4rem)] uppercase text-[var(--blanc)] mb-6">Que souhaitez-vous faire avec votre site ?</h3>
+        <div class="space-y-3 text-left" id="wiz-goals"></div>
+        <button data-gostep="3" class="btn-white mt-8">Continuer</button>
+      </div>
+      <div data-step="3" class="wiz-step hidden max-w-[700px] mx-auto text-center">
+        <h3 class="font-anton text-[clamp(2rem,4vw,3.4rem)] uppercase text-[var(--blanc)] mb-8">Comment souhaitez-vous commencer ?</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <button data-scrollto="templates" class="bg-[var(--carbone)] border border-[var(--l-line)] rounded-2xl p-8 text-left cursor-pointer group hover:border-[rgba(255,179,71,.4)] hover:-translate-y-1 transition-all duration-300" style="transition-timing-function:var(--ease-silk);"><div class="text-4xl mb-4">🎨</div><h4 class="font-anton text-2xl uppercase text-[var(--blanc)] mb-2 group-hover:text-[var(--ambre)] transition-colors duration-300">Parcourir les templates</h4><p class="font-cormorant text-base text-[rgba(245,240,232,.62)] mb-4">Choisissez parmi notre collection de couvertures premium.</p><span class="font-space text-[.65rem] tracking-[.16em] uppercase text-[var(--ambre)]">Choisir →</span></button>
+          <button data-gostep="4" class="bg-[var(--carbone)] border border-[var(--l-line)] rounded-2xl p-8 text-left cursor-pointer group hover:border-[rgba(255,179,71,.4)] hover:-translate-y-1 transition-all duration-300" style="transition-timing-function:var(--ease-silk);"><div class="text-4xl mb-4">✨</div><h4 class="font-anton text-2xl uppercase text-[var(--blanc)] mb-2 group-hover:text-[var(--ambre)] transition-colors duration-300">Faites-nous confiance</h4><p class="font-cormorant text-base text-[rgba(245,240,232,.62)] mb-4">On crée un design unique, sur mesure pour vous.</p><span class="font-space text-[.65rem] tracking-[.16em] uppercase text-[var(--ambre)]">Créer sur mesure →</span></button>
+        </div>
+      </div>
+      <div data-step="4" class="wiz-step hidden max-w-[640px] mx-auto text-center">
+        <div id="wiz-form">
+          <h3 class="font-anton text-[clamp(2rem,4vw,3.4rem)] uppercase text-[var(--blanc)] mb-4">Dites-nous en plus sur vous</h3>
+          <div id="wiz-offer-banner" class="hidden mb-5 p-4 rounded-xl border border-[rgba(255,179,71,.3)] bg-[rgba(255,179,71,.05)] text-left"><p class="font-cormorant text-[.95rem] leading-relaxed text-[rgba(245,240,232,.85)]" id="wiz-offer-text"></p></div>
+          <p class="font-cormorant text-base text-[rgba(245,240,232,.62)] mb-6">Laissez-nous votre email, décrivez votre activité et choisissez la formule qui vous parle.</p>
+          <input id="wiz-email" type="email" placeholder="Votre email — pour qu'on vous recontacte" class="w-full bg-[rgba(245,240,232,.05)] border border-[rgba(245,240,232,.15)] text-[var(--blanc)] p-4 mb-3 font-space text-sm rounded-xl outline-none focus:border-[var(--ambre)] transition-colors duration-300 placeholder:text-[rgba(245,240,232,.3)]" />
+          <textarea id="wiz-desc" rows="6" placeholder="Décrivez votre activité, vos objectifs et ce que vous imaginez..." class="w-full bg-[rgba(245,240,232,.05)] border border-[rgba(245,240,232,.15)] text-[var(--blanc)] p-4 font-space text-sm rounded-xl outline-none focus:border-[var(--ambre)] transition-colors duration-300 resize-none placeholder:text-[rgba(245,240,232,.3)]"></textarea>
+          <div class="mt-8 mb-2 text-left">
+            <p class="font-space text-[.62rem] tracking-[.24em] uppercase text-[var(--l-mist)] mb-1">Dernière étape</p>
+            <h4 class="font-anton text-xl uppercase text-[var(--blanc)]">Quelle formule vous intéresse ?</h4>
+          </div>
+          <div id="wiz-offers" class="grid grid-cols-1 sm:grid-cols-3 gap-3"></div>
+          <button id="wiz-submit" class="btn-white mt-8 disabled:opacity-30 disabled:pointer-events-none" disabled>Envoyer ma demande</button>
+          <p id="wiz-error" class="hidden mt-4 font-space text-[.72rem] text-[#ff8a7a]"></p>
+        </div>
+        <div id="wiz-thanks" class="hidden"><div class="text-5xl mb-6">🎉</div><h3 class="font-anton text-[clamp(2rem,4vw,3.4rem)] uppercase text-[var(--blanc)] mb-4">Merci !</h3><p class="font-cormorant text-xl text-[rgba(245,240,232,.78)]" id="wiz-thanks-text">Nous reviendrons vers vous très rapidement.</p></div>
+      </div>
+      <div id="wiz-back-wrap" class="hidden text-center mt-8"><button id="wiz-back" class="font-space text-[.65rem] tracking-[.14em] uppercase text-[var(--l-mist)] bg-transparent border-none cursor-pointer hover:text-[var(--blanc)] transition-colors duration-300">← Retour</button></div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer id="contact" class="bg-[var(--blanc)] border-t border-[var(--d-line)] px-6 md:px-12 py-10">
+    <div class="max-w-[1200px] mx-auto flex flex-col md:flex-row justify-between items-center gap-4 text-center md:text-left">
+      <span class="font-anton text-2xl tracking-[.06em] text-[var(--ink)] uppercase">WilSam <span class="opacity-40">Studio</span></span>
+      <div class="flex flex-col md:flex-row items-center gap-4 md:gap-6">
+        <a href="mailto:wilsam.studio@proton.me" class="font-space text-[.7rem] tracking-[.14em] text-[var(--ambre-deep)] no-underline hover:text-[var(--ink)] transition-colors duration-300">wilsam.studio@proton.me</a>
+        <button data-scrollto="tarifs" class="font-space text-[.62rem] tracking-[.2em] uppercase text-[var(--d-mist)] bg-transparent border-none cursor-pointer hover:text-[var(--ink)] transition-colors duration-300">Tarifs</button>
+      </div>
+      <p class="font-space text-[.66rem] tracking-[.08em] text-[var(--d-mist)]">© 2025 WilSam Studio — Périgueux</p>
+    </div>
+  </footer>
+</div>
+
+<button id="backtotop" class="hidden fixed bottom-6 right-6 z-[400] w-11 h-11 bg-[var(--ambre)] text-[var(--noir)] flex items-center justify-center cursor-pointer border-none hover:-translate-y-1 transition-transform duration-300" aria-label="Retour en haut"><svg width="14" viewBox="0 0 16 16" fill="none"><path d="M8 13V3M4 7l4-4 4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+
+<script>
+/* =========================================================
+   COVERS — la couverture (hero) de chaque template.
+   Édite bg / fg / accent / font / brand pour personnaliser.
+   ========================================================= */
+const F = { serif:"'Cormorant Garamond',serif", play:"'Playfair Display',serif", fraunces:"'Fraunces',serif", jost:"'Jost',sans-serif", osw:"'Oswald',sans-serif", grotesk:"'Space Grotesk',sans-serif" };
+const COVERS = [
+  {name:'Aurora',metier:'Fleuriste',cat:'Vitrine',brand:'Atelier Aurore',tag:'Fleurs de saison',cta:'Commander',bg:'radial-gradient(circle at 50% 15%,#E4C6BF,transparent 60%),linear-gradient(160deg,#F3ECE2,#E7DECF)',fg:'#2E2A26',accent:'#7C8B72',font:F.fraunces,href:'templates/aurora.html',video:'videos/video-3.mp4',poster:'posters/video-3.jpg'},
+  {name:'Nova',metier:'Salle de sport',cat:'Landing',brand:'NOVA FIT',tag:'Dépasse tes limites',cta:'Essai gratuit',bg:'linear-gradient(150deg,#101014,#1c1d22)',fg:'#F2F2F0',accent:'#C6FF3A',font:F.osw,upper:true,video:'videos/video-5.mp4',poster:'posters/video-5.jpg'},
+  {name:'Atlas',metier:'Architecte / BTP',cat:'Vitrine',brand:'ATLAS',tag:"Bâtir l'évidence",cta:'Nos projets',bg:'linear-gradient(160deg,#E8E6E1,#D3D0C9)',fg:'#1E1D1B',accent:'#B5651D',font:F.grotesk,upper:true,video:'videos/video-2.mp4',poster:'posters/video-2.jpg'},
+  {name:'Vertex',metier:'Immobilier',cat:'Landing',brand:'VERTEX',tag:"L'adresse rare",cta:'Estimer',bg:'linear-gradient(160deg,#0E1B2A,#16324d)',fg:'#F4EFE6',accent:'#C9A45B',font:F.play,upper:true},
+  {name:'Momentum',metier:'Auto-école',cat:'Vitrine',brand:'MOMENTUM',tag:'Le permis, plus vite',cta:"S'inscrire",bg:'linear-gradient(160deg,#FBFBFB,#EDEDED)',fg:'#141414',accent:'#E4372E',font:F.jost,upper:true},
+  {name:'Fusion',metier:'Startup / SaaS',cat:'Landing',brand:'Fusion',tag:'Ship faster',cta:'Try free',bg:'linear-gradient(140deg,#2b1e5e,#5b3fd6 60%,#7d5cff)',fg:'#F3F0FF',accent:'#9BE8FF',font:F.grotesk},
+  {name:'Studio One',metier:'Photographe',cat:'Portfolio',brand:'Studio One',tag:'Portraits & éditorial',cta:'Portfolio',bg:'#FAFAF8',fg:'#0F0F0F',accent:'#B0894E',font:F.play,italic:true,href:'templates/studio-one.html',video:'videos/video-3.mp4',poster:'posters/video-3.jpg'},
+  {name:'Vision',metier:'Opticien',cat:'Vitrine',brand:'VISION',tag:'Voir la vie nette',cta:'Prendre RDV',bg:'linear-gradient(160deg,#F4F8F9,#DCE9EC)',fg:'#12232A',accent:'#2E8C9E',font:F.jost,upper:true},
+  {name:'Nebula',metier:'Événementiel / DJ',cat:'Landing',brand:'NEBULA',tag:'La nuit vous appartient',cta:'Booker',bg:'radial-gradient(circle at 30% 20%,rgba(255,0,170,.4),transparent 55%),radial-gradient(circle at 80% 70%,rgba(0,200,255,.35),transparent 55%),#0A0812',fg:'#F5F0FF',accent:'#FF3DCB',font:F.grotesk,upper:true},
+  {name:'Prestige',metier:'Joaillerie',cat:'Vitrine',brand:'PRESTIGE',tag:"L'éclat du détail",cta:'Collection',bg:'linear-gradient(160deg,#0C0B0A,#1a1712)',fg:'#EFE3C8',accent:'#D4AF37',font:F.serif,upper:true},
+  {name:'Minimal',metier:'Archi. intérieur',cat:'Portfolio',brand:'MINIMAL',tag:'Less, but better',cta:'Projets',bg:'#F6F5F1',fg:'#1B1B19',accent:'#8A857C',font:F.jost,upper:true},
+  {name:'Pulse',metier:'Studio de danse',cat:'Landing',brand:'PULSE',tag:'Bouge autrement',cta:"Cours d'essai",bg:'linear-gradient(150deg,#FF5C7A,#FF2D55 60%,#B31234)',fg:'#FFF3F5',accent:'#111111',font:F.osw,upper:true},
+  {name:'Infinity',metier:'Agence de voyage',cat:'Vitrine',brand:'INFINITY',tag:'Le monde, sans limite',cta:'Explorer',bg:'linear-gradient(180deg,#8FC4E8,#EAD5B8 70%,#F3E9D8)',fg:'#123',accent:'#E0762B',font:F.fraunces,upper:true},
+  {name:'Obsidian',metier:'Coach sportif',cat:'Landing',brand:'OBSIDIAN.',tag:'Forge ton corps',cta:"Séance d'essai",bg:'radial-gradient(ellipse at 70% 30%,rgba(255,77,28,.28),transparent 60%),linear-gradient(180deg,#0A0A0B,#161618)',fg:'#F2F1EE',accent:'#FF4D1C',font:F.osw,upper:true,href:'templates/obsidian.html',video:'videos/video-4.mp4',poster:'posters/video-4.jpg'},
+  {name:'Crystal',metier:'Spa / institut',cat:'Vitrine',brand:'CRYSTAL',tag:'Respirez',cta:'Réserver',bg:'linear-gradient(160deg,#EAF6F4,#CFE9E3)',fg:'#153B36',accent:'#4FA79A',font:F.serif,upper:true},
+  {name:'Horizon',metier:'Photo paysage',cat:'Portfolio',brand:'HORIZON',tag:"L'instant, immense",cta:'Galerie',bg:'linear-gradient(180deg,#243B55,#C58A5B 75%,#E9C79B)',fg:'#FBF6EE',accent:'#F2C14E',font:F.play,upper:true},
+  {name:'Monolith',metier:'Cabinet d\'avocats',cat:'Landing',brand:'MONOLITH',tag:'La force du droit',cta:'Consultation',bg:'linear-gradient(160deg,#1F2933,#2f3b47)',fg:'#EDEFF2',accent:'#B08D57',font:F.play,upper:true},
+  {name:'Origin',metier:'Boulanger artisan',cat:'Vitrine',brand:'ORIGIN',tag:'Le pain, le vrai',cta:'La carte',bg:'linear-gradient(160deg,#F1E4CE,#E3CBA3)',fg:'#3A2A15',accent:'#8A5A12',font:F.fraunces,upper:true},
+  {name:'Canvas',metier:'Artiste peintre',cat:'Portfolio',brand:'CANVAS',tag:'La couleur d\'abord',cta:'Œuvres',bg:'linear-gradient(120deg,#FFFDF8 60%,#FFD23F 60%)',fg:'#141414',accent:'#E4372E',font:F.grotesk,upper:true},
+  {name:'Impulse',metier:'Food truck',cat:'Landing',brand:'IMPULSE',tag:'Street food & co',cta:'Le menu',bg:'linear-gradient(150deg,#FFD400,#FFB300)',fg:'#161616',accent:'#161616',font:F.osw,upper:true,video:'videos/video-1.mp4',poster:'posters/video-1.jpg'},
+];
+
+/* Sections existantes */
+const PRICING={standard:{key:'standard',nom:'Site vitrine Standard',prix:250,accroche:"Design personnalisé · Accueil — Service — Contact · Formulaire intégré · Adapté tout écran",optionMode:'multi'},pro:{key:'pro',nom:'Landing Page Pro',prix:400,accroche:"Structure orientée conversion · Design accrocheur · Appels à l'action clairs · Chargement ultra rapide",optionMode:'exclusive'},premium:{key:'premium',nom:'Landing Page Premium',prix:500,prixBarre:550,mention:'tout inclus',accroche:"Design accrocheur & conversion · HTTPS sécurisé · Google Search Console",optionMode:'included'}};
+const OPTIONS={hebergement:{label:'Hébergement',prix:75},admin:{label:'Administrateur',prix:75}};
+const ADVANTAGES=[{title:'Visibilité 24/7',desc:'Votre vitrine ne ferme jamais — clients potentiels accueillis à toute heure.'},{title:'Crédibilité',desc:"Un site professionnel renforce la confiance et l'image de marque."},{title:'Référencement',desc:"Être trouvé sur Google, c'est exister dans le monde numérique."},{title:'Contrôle total',desc:'Vous maîtrisez votre message, votre image, votre identité.'}];
+const FEATURES=[{title:'Landing Pages',desc:'Pages optimisées pour une seule action — conversion maximale.'},{title:'Design Moderne',desc:'Interfaces épurées, typographies soignées, animations fluides.'},{title:'Conversion & UX',desc:"Chaque pixel est pensé pour guider l'utilisateur vers l'action."},{title:'Performance',desc:'Chargement ultra-rapide, responsive, SEO optimisé.'}];
+const GOALS=['Expliquer mon enseigne ou qui je suis','Proposer mes services','Donner mes horaires','Être contacté facilement','Présenter mes réalisations','Vendre mes produits'];
+
+const $=(s,r=document)=>r.querySelector(s); const $$=(s,r=document)=>Array.from(r.querySelectorAll(s));
+const checkSVG='<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6L5 9L10 3" stroke="#050505" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+const isMobile=window.matchMedia('(max-width: 767px)').matches;
+const saveData=(navigator.connection&&navigator.connection.saveData)===true;
+function scrollToId(id){closeAllMenus();const el=document.getElementById(id);if(el)el.scrollIntoView({behavior:'smooth'});}
+
+/* Cover mock-up renderer */
+function coverHTML(c){
+  const titleStyle=`font-family:${c.font};color:${c.fg};${c.upper?'text-transform:uppercase;letter-spacing:.03em;':''}${c.italic?'font-style:italic;':''}font-weight:${c.font===F.osw?600:c.font===F.grotesk||c.font===F.jost?500:400};`;
+  const ctaStyle=`color:${c.fg};border:1px solid ${c.accent};`;
+  return `<div class="cover" style="background:${c.bg};color:${c.fg};">
+    <div class="cover-bar"><span class="dots"><i></i><i></i><i></i></span><span class="m"><span>${c.metier}</span></span></div>
+    <div class="cover-body">
+      <div class="cover-title" style="${titleStyle}">${c.brand}</div>
+      <div class="cover-tag" style="color:${c.fg};">${c.tag}</div>
+      <div class="cover-cta" style="${ctaStyle}">${c.cta}</div>
+    </div>
+  </div>`;
+}
+
+/* HERO video switcher (2-buffer crossfade) */
+const HERO_LIST = COVERS.filter(c=>c.video);
+const HeroBG=(function(){
+  const wrap=$('#hero-video-wrap'); const useVideo=!isMobile&&!saveData;
+  let current=-1, front=0; const buffers=[]; const loaded=new Set();
+  for(let i=0;i<2;i++){let el;if(useVideo){el=document.createElement('video');el.className='hero-video-layer';el.muted=true;el.loop=true;el.playsInline=true;el.setAttribute('muted','');el.setAttribute('playsinline','');el.preload='auto';}else{el=document.createElement('div');el.className='hero-video-layer';el.style.backgroundSize='cover';el.style.backgroundPosition='center';}wrap.appendChild(el);buffers.push(el);}
+  function setSource(el,idx){const m=HERO_LIST[idx];if(useVideo){if(el.dataset.idx!==String(idx)){el.src=m.video;el.dataset.idx=String(idx);el.load();}el.play().catch(()=>{});}else{el.style.backgroundImage=`url("${m.poster}")`;}}
+  function show(idx){if(idx===current||idx<0||idx>=HERO_LIST.length)return;const back=front^1;setSource(buffers[back],idx);buffers[back].classList.add('active');buffers[front].classList.remove('active');front=back;current=idx;loaded.add(idx);}
+  return {show,get current(){return current;}};
+})();
+
+/* HERO carousel */
+(function(){
+  const track=$('#hcar-track'), viewport=$('#hcar-viewport');
+  const seq=HERO_LIST.concat(HERO_LIST);
+  track.innerHTML=seq.map((c,k)=>`<div class="hcar-card" data-idx="${k%HERO_LIST.length}" role="button" tabindex="0" aria-label="${c.name}">${coverHTML(c)}</div>`).join('');
+  let offset=0,half=0,speed=0.35,paused=false;
+  function measure(){half=track.scrollWidth/2;} window.addEventListener('resize',measure);setTimeout(measure,300);measure();
+  function frame(){if(!paused){offset-=speed;if(half>0&&-offset>=half)offset+=half;track.style.transform=`translateX(${offset}px)`;}requestAnimationFrame(frame);}
+  requestAnimationFrame(frame);
+  function updateActive(){const vp=viewport.getBoundingClientRect();const center=vp.left+vp.width/2;let best=null,bd=Infinity;$$('.hcar-card',track).forEach(card=>{const r=card.getBoundingClientRect();const c=r.left+r.width/2;const d=Math.abs(c-center);if(d<bd){bd=d;best=card;}});if(best){const idx=parseInt(best.dataset.idx,10);$$('.hcar-card',track).forEach(c=>c.classList.toggle('is-active',c===best));HeroBG.show(idx);}}
+  setInterval(updateActive,180);setTimeout(updateActive,400);
+  $$('.hcar-card',track).forEach(card=>{
+    const act=()=>{paused=true;const idx=parseInt(card.dataset.idx,10);$$('.hcar-card',track).forEach(c=>c.classList.toggle('is-active',c===card));HeroBG.show(idx);};
+    card.addEventListener('mouseenter',act);card.addEventListener('focus',act);
+    card.addEventListener('mouseleave',()=>paused=false);card.addEventListener('blur',()=>paused=false);
+    const go=()=>{const c=HERO_LIST[parseInt(card.dataset.idx,10)];if(c.href)window.open(c.href,'_blank');else scrollToId('templates');};
+    card.addEventListener('click',go);card.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();go();}});
+  });
+  HeroBG.show(0);
+})();
+
+/* LAMP reveal */
+(function(){const sec=$('#lampe');new IntersectionObserver((en)=>{en.forEach(e=>{if(e.isIntersecting)sec.classList.add('on');});},{threshold:0.45}).observe(sec);})();
+
+/* ADVANTAGES / FEATURES (light) */
+(function(){
+  $('#advantages').innerHTML=ADVANTAGES.map((a,i)=>`<div class="reveal bg-[var(--creme)] p-8 relative overflow-hidden group" style="transition-delay:${i*100}ms;"><div class="absolute left-0 top-0 bottom-0 w-[3px] bg-[var(--ambre)] scale-y-0 group-hover:scale-y-100 transition-transform duration-500 origin-bottom" style="transition-timing-function:var(--ease-silk);"></div><h4 class="font-anton text-2xl tracking-[.03em] uppercase text-[var(--ink)] mb-2 relative z-10">${a.title}</h4><p class="font-cormorant text-base text-[var(--ink-soft)] relative z-10">${a.desc}</p></div>`).join('');
+  $('#features').innerHTML=FEATURES.map((f,i)=>`<div class="reveal bg-[var(--creme)] border border-[var(--d-line)] rounded-2xl p-8 group hover:border-[rgba(138,90,18,.4)] transition-all duration-500" style="transition-delay:${i*100}ms;transition-timing-function:var(--ease-silk);"><h4 class="font-anton text-2xl tracking-[.03em] uppercase text-[var(--ink)] mb-3 group-hover:text-[var(--ambre-deep)] transition-colors duration-300">${f.title}</h4><p class="font-cormorant text-base text-[var(--ink-soft)]">${f.desc}</p></div>`).join('');
+})();
+
+/* TEMPLATES grid — covers */
+(function(){
+  $('#templates-grid').innerHTML=COVERS.map(c=>`
+    <div class="reveal group relative bg-[var(--creme)] border border-[var(--d-line)] rounded-2xl overflow-hidden transition-all duration-500 hover:-translate-y-2 hover:border-[rgba(138,90,18,.35)] hover:shadow-[0_24px_48px_rgba(20,18,16,.14)]">
+      <div class="aspect-[16/11] relative overflow-hidden">${coverHTML(c)}<span class="absolute top-3 right-3 font-space text-[.55rem] tracking-[.14em] uppercase text-[rgba(255,255,255,.9)] border border-[rgba(255,255,255,.4)] px-2 py-1 bg-[rgba(0,0,0,.28)] backdrop-blur-sm">${c.cat}</span></div>
+      <div class="p-5">
+        <h4 class="font-anton text-2xl tracking-[.03em] uppercase text-[var(--ink)] mb-0.5 group-hover:text-[var(--ambre-deep)] transition-colors duration-300">${c.name}</h4>
+        <p class="font-space text-[.6rem] tracking-[.1em] uppercase text-[var(--ambre-deep)] mb-3">${c.metier}</p>
+        ${c.href?`<a href="${c.href}" target="_blank" rel="noopener" class="inline-block font-space text-[.64rem] tracking-[.16em] uppercase text-[var(--blanc)] bg-[var(--ink)] px-4 py-2 rounded-full cursor-pointer hover:bg-black transition">Voir le site →</a>`:`<button data-choose="${c.name}" class="font-space text-[.64rem] tracking-[.16em] uppercase text-[var(--ambre-deep)] bg-transparent border border-[rgba(138,90,18,.35)] px-4 py-2 rounded-full cursor-pointer hover:bg-[rgba(138,90,18,.08)] transition-colors duration-300">Choisir ce template →</button>`}
+      </div>
+    </div>`).join('');
+  $$('#templates-grid [data-choose]').forEach(btn=>btn.addEventListener('click',()=>chooseTemplate(btn.dataset.choose)));
+})();
+
+/* PRICING (light) */
+(function(){
+  const grid=$('#pricing-grid');
+  grid.innerHTML=Object.values(PRICING).map(plan=>{
+    const included=plan.optionMode==='included';
+    const border=included?'border-[rgba(138,90,18,.45)] shadow-[0_12px_32px_rgba(20,18,16,.1)]':'border-[var(--d-line)] shadow-[0_12px_32px_rgba(20,18,16,.06)]';
+    const badge=included?`<div class="absolute -top-3 left-1/2 -translate-x-1/2"><span class="font-space text-[.6rem] tracking-[.18em] uppercase bg-[var(--ambre-deep)] text-[var(--creme)] px-4 py-1 rounded-full font-medium">Recommandé</span></div>`:'';
+    const mention=plan.mention?`<span class="font-space text-[.6rem] tracking-[.18em] uppercase text-[var(--ambre-deep)] ml-2 align-middle whitespace-nowrap">${plan.mention}</span>`:'';
+    const barre=plan.prixBarre?`<span class="font-anton text-2xl text-[rgba(20,18,16,.35)] line-through">${plan.prixBarre} €</span>`:'';
+    function tg(k){const o=OPTIONS[k];if(included){return `<button data-opt="${k}" disabled class="opt-toggle w-full flex items-center justify-between p-3 rounded-xl border transition-all duration-300 cursor-default border-[rgba(138,90,18,.4)] bg-[rgba(255,179,71,.14)]"><div class="flex items-center gap-3"><div class="opt-box w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all duration-300 border-[var(--ambre)] bg-[var(--ambre)]">${checkSVG}</div><span class="font-space text-[.75rem] text-[var(--ink)]">${o.label}</span><span class="font-space text-[.55rem] tracking-[.1em] uppercase bg-[var(--ambre)] text-[var(--noir)] px-2 py-[2px] rounded-full font-medium">Inclus</span></div></button>`;}return `<button data-opt="${k}" class="opt-toggle w-full flex items-center justify-between p-3 rounded-xl border transition-all duration-300 cursor-pointer border-[var(--d-line)] bg-transparent hover:border-[rgba(20,18,16,.3)]"><div class="flex items-center gap-3"><div class="opt-box w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all duration-300 border-[rgba(20,18,16,.3)]"></div><span class="font-space text-[.75rem] text-[var(--ink)]">${o.label}</span></div><span class="font-space text-[.7rem] text-[var(--ambre-deep)]">+${o.prix} €</span></button>`;}
+    return `<div class="pricing-card reveal relative flex flex-col bg-[var(--creme)] border rounded-2xl p-6 md:p-8 transition-all duration-500 hover:-translate-y-2 ${border} hover:shadow-[0_24px_48px_rgba(20,18,16,.12)]" data-plan="${plan.key}" data-mode="${plan.optionMode}" data-base="${plan.prix}" style="transition-timing-function:var(--ease-silk);">${badge}<h3 class="font-anton font-light text-[clamp(1.6rem,2vw,2.1rem)] leading-[1.1] tracking-[.02em] uppercase text-[var(--ink)]">${plan.nom}${mention}</h3><div class="mt-4 flex items-baseline gap-2" aria-live="polite">${barre}<span class="plan-total font-anton text-[clamp(2.4rem,2.6vw,3.2rem)] leading-none text-[var(--ink)] transition-colors duration-300">${plan.prix} €</span></div><p class="flex-1 mt-3 font-cormorant italic text-lg leading-relaxed text-[var(--ink-soft)]">${plan.accroche}</p><div class="mt-5 space-y-2">${tg('hebergement')}${tg('admin')}</div><button class="pricing-start btn-dark mt-6 w-full">Commencer</button></div>`;
+  }).join('');
+  $$('.pricing-card').forEach(card=>{
+    const mode=card.dataset.mode,base=parseInt(card.dataset.base,10);const state={hebergement:mode==='included',admin:mode==='included'};const totalEl=$('.plan-total',card);
+    function setV(btn,on){const box=$('.opt-box',btn);if(on){btn.className=btn.className.replace(/border-\[var\(--d-line\)\] bg-transparent hover:border-\[rgba\(20,18,16,\.3\)\]/,'border-[rgba(138,90,18,.4)] bg-[rgba(255,179,71,.14)]');box.className='opt-box w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all duration-300 border-[var(--ambre)] bg-[var(--ambre)]';box.innerHTML=checkSVG;}else{btn.className=btn.className.replace(/border-\[rgba\(138,90,18,\.4\)\] bg-\[rgba\(255,179,71,\.14\)\]/,'border-[var(--d-line)] bg-transparent hover:border-[rgba(20,18,16,.3)]');box.className='opt-box w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all duration-300 border-[rgba(20,18,16,.3)]';box.innerHTML='';}}
+    function rc(){totalEl.textContent=(mode==='included'?base:base+(state.hebergement?OPTIONS.hebergement.prix:0)+(state.admin?OPTIONS.admin.prix:0))+' €';}
+    if(mode!=='included'){$$('.opt-toggle',card).forEach(btn=>btn.addEventListener('click',()=>{const k=btn.dataset.opt;if(mode==='exclusive'){state[k]=!state[k];if(state[k]){const o=k==='hebergement'?'admin':'hebergement';state[o]=false;setV($(`.opt-toggle[data-opt="${o}"]`,card),false);}}else{state[k]=!state[k];}setV(btn,state[k]);rc();}));}
+    $('.pricing-start',card).addEventListener('click',()=>{const total=mode==='included'?base:base+(state.hebergement?OPTIONS.hebergement.prix:0)+(state.admin?OPTIONS.admin.prix:0);startFromPricing(card.dataset.plan,state.hebergement,state.admin,total);});
+  });
+})();
+
+/* NAVBAR scroll */
+(function(){const nav=$('#navbar');window.addEventListener('scroll',()=>{if(scrollY>50){nav.classList.add('bg-[#050505]/85','backdrop-blur-xl');nav.classList.remove('bg-transparent');}else{nav.classList.remove('bg-[#050505]/85','backdrop-blur-xl');nav.classList.add('bg-transparent');}},{passive:true});})();
+
+/* MEGA MENU */
+let openMenu=null;
+function setMegaBar(idx,on){const btn=$(`.megabtn[data-megamenu="${idx}"]`);if(!btn)return;const bar=$('.megabar',btn);bar.classList.toggle('scale-x-0',!on);bar.classList.toggle('scale-x-[.6]',on);btn.classList.toggle('opacity-60',!on);btn.classList.toggle('opacity-100',on);}
+function openMega(idx){openMenu=idx;const p=$('#megapanel');p.classList.remove('hidden');p.classList.add('md:block');$$('[data-panel]').forEach(x=>x.classList.toggle('hidden',x.dataset.panel!=String(idx)));setMegaBar(0,idx===0);setMegaBar(1,idx===1);}
+function closeMega(){openMenu=null;const p=$('#megapanel');p.classList.add('hidden');p.classList.remove('md:block');setMegaBar(0,false);setMegaBar(1,false);}
+$$('.megabtn').forEach(btn=>btn.addEventListener('click',e=>{e.stopPropagation();const idx=parseInt(btn.dataset.megamenu,10);if(openMenu===idx)closeMega();else openMega(idx);}));
+document.addEventListener('click',e=>{const nav=$('#navbar');if(openMenu!==null&&!nav.contains(e.target))closeMega();});
+
+/* MOBILE MENU */
+let mobileOpen=false;
+$('#hamburger').addEventListener('click',()=>{mobileOpen=!mobileOpen;const m=$('#mobilemenu');m.classList.toggle('hidden',!mobileOpen);m.classList.toggle('flex',mobileOpen);const ham=$('#hamburger');ham.querySelector('.ham-l').classList.toggle('rotate-45',mobileOpen);ham.querySelector('.ham-l').classList.toggle('translate-x-[4.7px]',mobileOpen);ham.querySelector('.ham-l').classList.toggle('translate-y-[4.7px]',mobileOpen);ham.querySelector('.ham-m').classList.toggle('opacity-0',mobileOpen);ham.querySelector('.ham-r').classList.toggle('-rotate-45',mobileOpen);ham.querySelector('.ham-r').classList.toggle('translate-x-[4.7px]',mobileOpen);ham.querySelector('.ham-r').classList.toggle('-translate-y-[4.7px]',mobileOpen);closeMega();});
+$$('[data-mobacc]').forEach(btn=>btn.addEventListener('click',()=>{const idx=btn.dataset.mobacc;const sub=$(`[data-mobsub="${idx}"]`);$$('[data-mobsub]').forEach(s=>{if(s!==sub)s.classList.add('hidden');});sub.classList.toggle('hidden');}));
+function closeAllMenus(){closeMega();if(mobileOpen){mobileOpen=false;const m=$('#mobilemenu');m.classList.add('hidden');m.classList.remove('flex');const ham=$('#hamburger');['ham-l','ham-m','ham-r'].forEach(c=>{const el=ham.querySelector('.'+c);el.className=el.className.replace(/rotate-45|translate-x-\[4\.7px\]|translate-y-\[4\.7px\]|opacity-0|-rotate-45|-translate-y-\[4\.7px\]/g,'').trim();});ham.querySelector('.ham-l').classList.add('w-[22px]','h-[1.5px]','bg-[var(--blanc)]','block','transition-transform','duration-300');ham.querySelector('.ham-m').classList.add('w-[22px]','h-[1.5px]','bg-[var(--blanc)]','block','transition-all','duration-300');ham.querySelector('.ham-r').classList.add('w-[22px]','h-[1.5px]','bg-[var(--blanc)]','block','transition-transform','duration-300');}}
+
+/* SCROLL-TO */
+document.addEventListener('click',e=>{const t=e.target.closest('[data-scrollto]');if(t){e.preventDefault();scrollToId(t.dataset.scrollto);return;}const top=e.target.closest('[data-scrolltop]');if(top){e.preventDefault();closeAllMenus();window.scrollTo({top:0,behavior:'smooth'});}});
+
+/* REVEAL */
+(function(){const obs=new IntersectionObserver((en)=>{en.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target);}});},{threshold:0.15});$$('.reveal').forEach(el=>obs.observe(el));})();
+
+/* BACK TO TOP */
+(function(){const btn=$('#backtotop');window.addEventListener('scroll',()=>{btn.classList.toggle('hidden',scrollY<=600);btn.classList.toggle('flex',scrollY>600);},{passive:true});btn.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));})();
+
+/* =========================================================
+   WIZARD
+   ---------------------------------------------------------
+   ENVOI D'EMAIL — À LIRE :
+   Un site statique (GitHub Pages) ne peut pas envoyer d'email seul.
+   On passe par Web3Forms (gratuit, sans serveur) :
+     1. Va sur https://web3forms.com
+     2. Crée une clé avec l'adresse wilsam.studio@proton.me
+     3. Colle la clé ci-dessous à la place de 'VOTRE_CLE_WEB3FORMS'
+   Tant que la clé n'est pas mise, le formulaire ouvre automatiquement
+   le logiciel mail du visiteur (repli mailto) — rien n'est perdu.
+   ========================================================= */
+const WEB3FORMS_KEY='VOTRE_CLE_WEB3FORMS';
+const CONTACT_EMAIL='wilsam.studio@proton.me';
+
+let wizStep=1;
+const wizState={subject:'',goals:[],desc:'',email:'',offer:null,template:'',extra:''};
+
+/* Objectifs (étape 2) */
+$('#wiz-goals').innerHTML=GOALS.map(g=>`<button data-goal="${g}" class="goal-btn w-full flex items-center gap-3 p-4 rounded-xl border transition-all duration-300 cursor-pointer border-[rgba(245,240,232,.12)] bg-transparent hover:border-[rgba(245,240,232,.25)]"><div class="goal-box w-5 h-5 rounded-md border-2 flex items-center justify-center flex-shrink-0 transition-all duration-300 border-[rgba(245,240,232,.3)]"></div><span class="font-space text-[.78rem] text-[var(--blanc)]">${g}</span></button>`).join('');
+$$('.goal-btn').forEach(btn=>btn.addEventListener('click',()=>{const g=btn.dataset.goal,box=$('.goal-box',btn),on=wizState.goals.includes(g);if(on){wizState.goals=wizState.goals.filter(x=>x!==g);btn.className='goal-btn w-full flex items-center gap-3 p-4 rounded-xl border transition-all duration-300 cursor-pointer border-[rgba(245,240,232,.12)] bg-transparent hover:border-[rgba(245,240,232,.25)]';box.className='goal-box w-5 h-5 rounded-md border-2 flex items-center justify-center flex-shrink-0 transition-all duration-300 border-[rgba(245,240,232,.3)]';box.innerHTML='';}else{wizState.goals.push(g);btn.className='goal-btn w-full flex items-center gap-3 p-4 rounded-xl border transition-all duration-300 cursor-pointer border-[rgba(255,179,71,.5)] bg-[rgba(255,179,71,.08)]';box.className='goal-box w-5 h-5 rounded-md border-2 flex items-center justify-center flex-shrink-0 transition-all duration-300 border-[var(--ambre)] bg-[var(--ambre)]';box.innerHTML=checkSVG;}}));
+
+/* Sélecteur d'offre (étape 4) */
+const OFFER_BASE='offer-btn p-4 rounded-xl border transition-all duration-300 cursor-pointer border-[rgba(245,240,232,.15)] bg-transparent hover:border-[rgba(245,240,232,.3)]';
+const OFFER_ON='offer-btn p-4 rounded-xl border transition-all duration-300 cursor-pointer border-[var(--ambre)] bg-[rgba(255,179,71,.08)]';
+$('#wiz-offers').innerHTML=Object.values(PRICING).map(p=>`<button type="button" data-offer="${p.key}" class="${OFFER_BASE}"><span class="block font-anton text-[1.05rem] uppercase tracking-[.02em] text-[var(--blanc)] leading-tight">${p.nom}</span><span class="block font-space text-[.72rem] text-[var(--ambre)] mt-1">${p.prix} €</span></button>`).join('');
+$$('#wiz-offers [data-offer]').forEach(b=>b.addEventListener('click',()=>selectOfferUI(b.dataset.offer)));
+function selectOfferUI(key){wizState.offer=key;$$('#wiz-offers [data-offer]').forEach(b=>b.className=(b.dataset.offer===key?OFFER_ON:OFFER_BASE));validateStep4();}
+
+/* Choix depuis un template — pré-remplit et saute à l'étape 4 */
+function chooseTemplate(name){
+  const c=COVERS.find(x=>x.name===name); if(!c)return;
+  const map={Vitrine:'standard',Landing:'pro',Portfolio:'standard'};
+  const key=map[c.cat]||'standard';
+  wizState.template=name; wizState.subject=c.metier;
+  const si=$('#wiz-subject'); if(si){si.value=c.metier;$('#wiz-next1').disabled=false;}
+  selectOfferUI(key);
+  const alt=key==='standard'?'une Landing Page':'un Site vitrine';
+  $('#wiz-offer-text').innerHTML=`Le template « <strong>${c.name}</strong> » (${c.metier}) correspond à notre offre <strong>${PRICING[key].nom}</strong>. Rien n'est figé : vous pouvez tout à fait choisir ${alt} ci-dessous — on adaptera le design à votre univers.`;
+  $('#wiz-offer-banner').classList.remove('hidden');
+  showStep(4);
+  setTimeout(()=>scrollToId('commencons'),100);
+}
+
+function showStep(n){wizStep=n;$$('.wiz-step').forEach(s=>{const on=s.dataset.step==String(n);s.classList.toggle('hidden',!on);if(on)s.style.animation='slideIn .4s var(--ease-silk)';});$('#wiz-step').textContent=n;$('#wizard-progress').style.width=((n-1)/3*100)+'%';const submitted=!$('#wiz-thanks').classList.contains('hidden');$('#wiz-back-wrap').classList.toggle('hidden',!(n>1&&!submitted));}
+
+$('#wiz-subject').addEventListener('input',e=>{wizState.subject=e.target.value;$('#wiz-next1').disabled=!e.target.value.trim();});
+$('#wiz-next1').addEventListener('click',()=>{if(wizState.subject.trim())showStep(2);});
+$('#wiz-email').addEventListener('input',e=>{wizState.email=e.target.value;validateStep4();});
+$('#wiz-desc').addEventListener('input',e=>{wizState.desc=e.target.value;validateStep4();});
+$$('[data-gostep]').forEach(btn=>btn.addEventListener('click',()=>showStep(parseInt(btn.dataset.gostep,10))));
+$('#wiz-back').addEventListener('click',()=>{if(wizStep>1)showStep(wizStep-1);});
+
+function validEmail(v){return /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v||'');}
+function validateStep4(){$('#wiz-submit').disabled=!(validEmail(wizState.email)&&wizState.desc.trim());}
+
+function offerLabel(){return wizState.offer?`${PRICING[wizState.offer].nom} (${PRICING[wizState.offer].prix} €)`:'À définir ensemble';}
+function mailtoHref(){
+  const body=`Nouvelle demande via le site WilSam Studio\n\nEmail client : ${wizState.email}\nSujet du site : ${wizState.subject||'—'}\nObjectifs : ${wizState.goals.join(', ')||'—'}\nOffre choisie : ${offerLabel()}${wizState.extra?' — '+wizState.extra:''}\nTemplate : ${wizState.template||'—'}\n\nMessage :\n${wizState.desc}`;
+  return `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent('Nouvelle demande — '+(wizState.subject||'Site web'))}&body=${encodeURIComponent(body)}`;
+}
+async function sendViaWeb3Forms(){
+  if(!WEB3FORMS_KEY||WEB3FORMS_KEY==='VOTRE_CLE_WEB3FORMS')return false;
+  const payload={
+    access_key:WEB3FORMS_KEY,
+    subject:'Nouvelle demande — '+(wizState.subject||'Site web'),
+    from_name:'Site WilSam Studio',
+    email:wizState.email,
+    'Email client':wizState.email,
+    'Sujet du site':wizState.subject||'—',
+    'Objectifs':wizState.goals.join(', ')||'—',
+    'Offre choisie':offerLabel()+(wizState.extra?' — '+wizState.extra:''),
+    'Template':wizState.template||'—',
+    'Message':wizState.desc
+  };
+  try{
+    const r=await fetch('https://api.web3forms.com/submit',{method:'POST',headers:{'Content-Type':'application/json',Accept:'application/json'},body:JSON.stringify(payload)});
+    const j=await r.json(); return !!j.success;
+  }catch(e){return false;}
+}
+function finishWizard(msg){$('#wiz-form').classList.add('hidden');if(msg)$('#wiz-thanks-text').textContent=msg;$('#wiz-thanks').classList.remove('hidden');$('#wiz-back-wrap').classList.add('hidden');$('#wizard-progress').style.width='100%';}
+
+$('#wiz-submit').addEventListener('click',async()=>{
+  if($('#wiz-submit').disabled)return;
+  const btn=$('#wiz-submit'),err=$('#wiz-error');err.classList.add('hidden');
+  const label=btn.textContent;btn.disabled=true;btn.textContent='Envoi…';
+  const sent=await sendViaWeb3Forms();
+  if(sent){finishWizard('Votre demande a bien été envoyée. Nous revenons vers vous très vite.');}
+  else{
+    /* Repli : ouvre le logiciel mail du visiteur, pré-rempli */
+    window.location.href=mailtoHref();
+    finishWizard('Votre logiciel de messagerie vient de s\'ouvrir avec votre demande pré-remplie — il ne vous reste qu\'à appuyer sur « Envoyer ».');
+  }
+  btn.textContent=label;
+});
+
+/* Depuis la grille de tarifs */
+function startFromPricing(offerKey,heb,admin,total){
+  wizState.extra=(heb?'+ Hébergement':'')+(heb&&admin?' ':'')+(admin?'+ Administrateur':'')+(total?` — total ${total} €`:'');
+  selectOfferUI(offerKey);
+  const banner=$('#wiz-offer-banner'),txt=$('#wiz-offer-text');
+  banner.classList.remove('hidden');
+  let s=`Offre sélectionnée : <strong>${PRICING[offerKey].nom}</strong> — ${total} €`;if(heb)s+=' + Hébergement';if(admin)s+=' + Administrateur';
+  txt.innerHTML=s;
+  showStep(1);setTimeout(()=>scrollToId('commencons'),100);
+}
+</script>
+</body>
+</html>
