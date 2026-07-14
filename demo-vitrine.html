@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Colette Vasseur — Faïence & peinture</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#f6f5f1; --ink:#211f1b; --ink-soft:#5c584f; --line:#dcd8ce;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:"EB Garamond",Georgia,serif;font-size:19px;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  img{display:block;width:100%;height:auto}
+
+  header{display:flex;align-items:flex-start;justify-content:space-between;padding:38px 5vw 0;max-width:1500px;margin:0 auto;gap:24px}
+  .logo{font-family:"Caveat",cursive;font-weight:700;font-size:38px;line-height:.9;letter-spacing:.5px;color:var(--ink);text-decoration:none;display:block;transform:rotate(-2deg)}
+  .logo span{display:block}.logo span:last-child{padding-left:14px}
+  nav{display:flex;gap:34px;padding-top:14px;flex-wrap:wrap;justify-content:flex-end}
+  nav a{color:var(--ink);text-decoration:none;font-size:20px;letter-spacing:.2px;position:relative;padding-bottom:3px;transition:color .25s ease}
+  nav a::after{content:"";position:absolute;left:0;right:100%;bottom:0;height:1px;background:var(--ink);transition:right .3s ease}
+  nav a:hover{color:#000}nav a:hover::after,nav a.active::after{right:0}nav a.active{font-style:italic}
+
+  main{max-width:1500px;margin:0 auto;padding:0 5vw 120px}
+  .view{display:none;animation:fade .55s ease both}.view.active{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+  .hero{display:grid;grid-template-columns:minmax(300px,540px) 1fr;gap:6vw;align-items:start;padding-top:34px}
+  .studio figcaption{font-style:italic;font-size:17px;color:var(--ink-soft);margin-top:14px;padding-left:2px}
+  .statement{padding-top:150px;max-width:460px}
+  .statement p{font-size:21px;line-height:1.62}.statement p + p{margin-top:20px}
+  .sig{font-family:"Caveat",cursive;font-weight:700;font-size:60px;line-height:1;color:var(--ink);margin-top:80px;transform:rotate(-4deg);display:inline-block}
+
+  .section-head{padding-top:48px;max-width:720px}
+  .eyebrow{font-style:italic;color:var(--ink-soft);font-size:18px;letter-spacing:.3px}
+  h1.title{font-weight:400;font-size:clamp(32px,4vw,52px);line-height:1.08;letter-spacing:.2px;margin-top:8px}
+  .lede{margin-top:24px;font-size:21px;max-width:600px;color:#2b2822}
+
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(28px,3.4vw,58px);padding-top:64px;align-items:start}
+  .work img,.piece img,.portrait img{filter:drop-shadow(0 12px 26px rgba(40,36,28,.10))}
+  .work .meta{margin-top:16px}.work .meta .t{font-style:italic;font-size:19px}.work .meta .d{color:var(--ink-soft);font-size:16px}
+
+  .about{display:grid;grid-template-columns:minmax(240px,360px) 1fr;gap:6vw;padding-top:56px;align-items:start}
+  .about .prose{max-width:560px}.about .prose p{font-size:20px}.about .prose p + p{margin-top:20px}
+  .facts{margin-top:40px;border-top:1px solid var(--line);padding-top:26px}
+  .facts dl{display:grid;grid-template-columns:150px 1fr;row-gap:12px;column-gap:20px}
+  .facts dt{font-style:italic;color:var(--ink-soft)}.facts dd{color:var(--ink)}
+
+  .stages{padding-top:56px;display:grid;grid-template-columns:1fr 1fr;gap:5vw;max-width:1000px}
+  .stage-card{border-top:1px solid var(--line);padding-top:22px}
+  .stage-card h3{font-weight:500;font-size:24px;font-style:italic}
+  .stage-card p{margin-top:10px;color:#2b2822}.stage-card .when{margin-top:14px;color:var(--ink-soft);font-size:17px}
+
+  .pieces{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(28px,3.2vw,52px);padding-top:60px;align-items:start}
+  .piece .row{display:flex;justify-content:space-between;align-items:baseline;margin-top:16px;gap:12px}
+  .piece .t{font-style:italic;font-size:19px}.piece .price{white-space:nowrap}
+  .piece .d{color:var(--ink-soft);font-size:16px;margin-top:2px}
+  .tag{display:inline-block;margin-top:10px;font-size:14px;letter-spacing:.4px;padding:2px 10px;border:1px solid var(--line);border-radius:20px;color:var(--ink-soft)}
+  .tag.sold{color:#a5522f;border-color:#e2c3b3}
+
+  footer{max-width:1500px;margin:0 auto;padding:40px 5vw 60px;border-top:1px solid var(--line);display:flex;justify-content:space-between;flex-wrap:wrap;gap:16px;color:var(--ink-soft);font-size:16px}
+  footer a{color:var(--ink-soft)}
+
+  @media(max-width:900px){
+    body{font-size:18px}
+    header{flex-direction:column;align-items:center;text-align:center;gap:18px;padding-top:30px}
+    nav{justify-content:center;gap:22px}nav a{font-size:18px}
+    .hero{grid-template-columns:1fr;gap:32px}.statement{padding-top:0;max-width:none}.sig{margin-top:36px}
+    .studio{max-width:480px;margin:0 auto}
+    .about{grid-template-columns:1fr}.about .portrait{max-width:320px}
+    .grid,.pieces{grid-template-columns:repeat(2,1fr)}
+    .stages{grid-template-columns:1fr}.facts dl{grid-template-columns:130px 1fr}
+  }
+  @media(max-width:560px){.grid,.pieces{grid-template-columns:1fr;max-width:420px}.work,.piece{margin:0 auto;max-width:420px}}
+  @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto}}
+</style>
+</head>
+<body>
+
+<header>
+  <a href="#accueil" class="logo" data-nav><span>colette</span><span>vasseur</span></a>
+  <nav>
+    <a href="#oeuvres" data-nav>Œuvres</a>
+    <a href="#apropos" data-nav>À propos</a>
+    <a href="#stages" data-nav>Stages</a>
+    <a href="#pieces" data-nav>Pièces disponibles</a>
+  </nav>
+</header>
+
+<main>
+  <section id="accueil" class="view active" data-view>
+    <div class="hero">
+      <figure class="studio">
+        <img src="https://images.unsplash.com/photo-1517705008128-361805f42e86?auto=format&fit=crop&w=1200&q=80" alt="Atelier de faïence">
+        <figcaption>Atelier à la lumière du soir, Sète</figcaption>
+      </figure>
+      <div class="statement">
+        <p>La faïence n'est pas un objet de décor : c'est un lieu de mémoire. Chaque pièce porte le geste, l'empreinte, la lenteur du travail.</p>
+        <p>Je peins des surfaces de terre où les couleurs se mêlent à l'usage, pour que l'objet reste vivant, à la fois simple et chargé d'histoire.</p>
+        <span class="sig">Colette</span>
+      </div>
+    </div>
+  </section>
+
+  <section id="oeuvres" class="view" data-view>
+    <div class="section-head">
+      <div class="eyebrow">Sélection, 2021 — 2026</div>
+      <h1 class="title">Œuvres</h1>
+      <p class="lede">Panneaux de faïence émaillée, assemblés carreau par carreau. Chaque pièce garde la trace de ses joints — la peinture et l'objet ne font qu'un.</p>
+    </div>
+    <div class="grid">
+      <article class="work">
+        <img src="https://images.unsplash.com/photo-1519710164239-da123dc03ef4?auto=format&fit=crop&w=900&q=80" alt="Panneau de faïence">
+        <div class="meta">
+          <div class="t">Murmure de mer</div>
+          <div class="d">Panneau, 2024</div>
+        </div>
+      </article>
+      <article class="work">
+        <img src="https://images.unsplash.com/photo-1494526585095-c41746248156?auto=format&fit=crop&w=900&q=80" alt="Vase en céramique">
+        <div class="meta">
+          <div class="t">Éclat de pierre</div>
+          <div class="d">Vase, 2023</div>
+        </div>
+      </article>
+      <article class="work">
+        <img src="https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=900&q=80" alt="Atelier lumineux">
+        <div class="meta">
+          <div class="t">Lumière d'atelier</div>
+          <div class="d">Installation, 2022</div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section id="apropos" class="view" data-view>
+    <div class="section-head">
+      <div class="eyebrow">Née en 1989 à Sète</div>
+      <h1 class="title">À propos</h1>
+    </div>
+    <div class="about">
+      <div class="portrait">
+        <img src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=800&q=80" alt="Portrait de Colette Vasseur">
+      </div>
+      <div class="prose">
+        <p>Colette Vasseur travaille à partir de la terre et du feu, entre tradition artisanale et liberté picturale. Son travail cherche à conserver la matière, le grain, la chaleur du geste.</p>
+        <p>Elle crée des objets qui s'inscrivent dans l'usage du quotidien sans perdre leur singularité : vases, panneaux, pièces murales, objets de table.</p>
+        <div class="facts">
+          <dl>
+            <dt>Origine</dt><dd>Sète, France</dd>
+            <dt>Pratique</dt><dd>Faïence émaillée et peinture</dd>
+            <dt>Échelle</dt><dd>Objets, panneaux, commandes sur mesure</dd>
+          </dl>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="stages" class="view" data-view>
+    <div class="section-head">
+      <div class="eyebrow">Atelier à la carte</div>
+      <h1 class="title">Stages</h1>
+      <p class="lede">Des ateliers courts et immersifs, pour apprendre à manier la terre, le pinceau et la lumière.</p>
+    </div>
+    <div class="stages">
+      <article class="stage-card">
+        <h3>Stage initiation</h3>
+        <p>Deux jours pour découvrir les gestes de base de la faïence, la préparation et le décor.</p>
+        <div class="when">À partir de 240 €</div>
+      </article>
+      <article class="stage-card">
+        <h3>Atelier privé</h3>
+        <p>Une expérience plus intime, pensée pour les groupes ou les couples à la recherche d'un moment créatif.</p>
+        <div class="when">Sur demande</div>
+      </article>
+    </div>
+  </section>
+
+  <section id="pieces" class="view" data-view>
+    <div class="section-head">
+      <div class="eyebrow">Pièces disponibles</div>
+      <h1 class="title">Collection</h1>
+      <p class="lede">Des pièces uniques, réalisées à la main, à retrouver en atelier ou à réserver sur commande.</p>
+    </div>
+    <div class="pieces">
+      <article class="piece">
+        <img src="https://images.unsplash.com/photo-1517705008128-361805f42e86?auto=format&fit=crop&w=900&q=80" alt="Pièce en faïence">
+        <div class="row">
+          <div>
+            <div class="t">Vase de sable</div>
+            <div class="d">Faïence émaillée — 18 cm</div>
+          </div>
+          <div class="price">320 €</div>
+        </div>
+        <span class="tag">Disponible</span>
+      </article>
+      <article class="piece">
+        <img src="https://images.unsplash.com/photo-1494526585095-c41746248156?auto=format&fit=crop&w=900&q=80" alt="Pièce en céramique">
+        <div class="row">
+          <div>
+            <div class="t">Plaque d'atelier</div>
+            <div class="d">Peinture sur terre — 42 × 32 cm</div>
+          </div>
+          <div class="price">460 €</div>
+        </div>
+        <span class="tag sold">Réservée</span>
+      </article>
+      <article class="piece">
+        <img src="https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=900&q=80" alt="Pièce en faïence">
+        <div class="row">
+          <div>
+            <div class="t">Bol de lumière</div>
+            <div class="d">Faïence vernissée — 15 cm</div>
+          </div>
+          <div class="price">180 €</div>
+        </div>
+        <span class="tag">Disponible</span>
+      </article>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <span>© Colette Vasseur — site fictif · <a href="#accueil" data-nav>Accueil</a></span>
+  <span>Conçu par WilSam Studio</span>
+</footer>
+
+<script>
+  const views=document.querySelectorAll('[data-view]');
+  const navlinks=document.querySelectorAll('nav a[data-nav]');
+  function show(id){
+    let found=false;
+    views.forEach(v=>{const on=v.id===id;v.classList.toggle('active',on);if(on)found=true;});
+    if(!found){document.getElementById('accueil').classList.add('active');id='accueil';}
+    navlinks.forEach(a=>a.classList.toggle('active',a.getAttribute('href')==='#'+id));
+    window.scrollTo({top:0,behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'auto':'smooth'});
+  }
+  function route(){show((location.hash||'#accueil').slice(1));}
+  window.addEventListener('hashchange',route);
+  document.addEventListener('DOMContentLoaded',route);
+  route();
+</script>
+
+</body>
+</html>
